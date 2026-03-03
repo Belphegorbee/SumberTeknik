@@ -14,6 +14,11 @@
   user-select:none;
 }
 
+/* Hapus highlight biru default di mobile */
+.menu-item, .menu-trigger {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
 body{
   height:100vh;
   background:#0b1f12;
@@ -118,7 +123,7 @@ body{
 
 .menu-item:active{
   transform:scale(0.97);
-  background:linear-gradient(145deg,#1c5a33,#134021);
+  background:linear-gradient(145deg,#000000,#000000); /* efek hitam */
 }
 
 .icon-box{
