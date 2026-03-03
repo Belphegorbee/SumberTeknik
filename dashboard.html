@@ -42,9 +42,21 @@ body{
   padding:20px;
   background:linear-gradient(135deg,#0d5c2a,#1f8f45);
   color:white;
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
-.header h1{
+.back-btn{
+  cursor:pointer;
+  font-size:24px;
+}
+
+.header-text{
+  flex:1;
+}
+
+.header-text h1{
   font-size:1.1rem;
   font-weight:700;
 }
@@ -201,8 +213,11 @@ body{
   </div>
 
   <div class="header">
-    <h1>Dashboard Operasional</h1>
-    <div class="last-update" id="lastUpdate"></div>
+    <span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+    <div class="header-text">
+      <h1>Dashboard Operasional</h1>
+      <div class="last-update" id="lastUpdate"></div>
+    </div>
   </div>
 
   <div class="content" id="dashboard-container"></div>
@@ -211,6 +226,10 @@ body{
 
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbxMMHqtzaV0Ng-f9Cn-Q9sB9TdrmvMCbNeqIOePxDksyVUNP8ofDFNsl7uts97NCShpFA/exec";
+
+function goBack(){
+  window.location.href="menu.html";
+}
 
 const container = document.getElementById("dashboard-container");
 const lastUpdate = document.getElementById("lastUpdate");
