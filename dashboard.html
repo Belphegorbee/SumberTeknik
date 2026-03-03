@@ -237,14 +237,9 @@ const pinScreen = document.getElementById("pinScreen");
 const pinInput = document.getElementById("pinInput");
 const errorText = document.getElementById("errorText");
 
-if(sessionStorage.getItem("auth")==="true"){
-  pinScreen.style.display="none";
-  loadDashboard();
-}
-
+/* PIN SELALU DIMINTA */
 function checkPin(){
   if(pinInput.value==="1234"){
-    sessionStorage.setItem("auth","true");
     pinScreen.style.display="none";
     loadDashboard();
   }else{
@@ -311,9 +306,7 @@ function loadDashboard(){
 }
 
 setInterval(()=>{
-  if(sessionStorage.getItem("auth")==="true"){
-    loadDashboard();
-  }
+  loadDashboard();
 },30000);
 </script>
 
