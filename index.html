@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Loading Sumber Teknik</title>
+<style>
+html, body {
+  margin:0;
+  padding:0;
+  height:100%;
+  width:100%;
+  font-family:'Segoe UI', sans-serif;
+  overflow:hidden;
+}
+
+/* ==================== LOADING SCREEN ==================== */
+#loading {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 40%),
+    linear-gradient(135deg,#0f4c00,#072e00);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:10px;
+  box-sizing:border-box;
+  z-index:1000;
+  transition:opacity 0.8s ease;
+}
+
+.word-box {
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:nowrap;
+  max-width:100%;
+  margin-bottom:25px;
+}
+
+.letter-box {
+  width:50px;
+  height:50px;
+  min-width:40px;
+  min-height:40px;
+  max-width:60px;
+  max-height:60px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#000;
+  color:#fff;
+  border:2px solid #9eff6d;
+  border-radius:14px;
+  font-weight:bold;
+  font-size:5vw;
+  opacity:0;
+  transform: translateY(-50px);
+  box-sizing:border-box;
+  box-shadow:0 0 15px rgba(158,255,109,0.4);
+}
+
+/* Animasi bounce */
+@keyframes bounce {
+  0% { transform: translateY(-50px); opacity:0; }
+  50% { transform: translateY(0); opacity:1; }
+  70% { transform: translateY(-10px); }
+  100% { transform: translateY(0); opacity:1; }
+}
+
+/* Tagline */
+.tagline{
+  margin-top:10px;
+  font-size:0.8rem;
+  color:#c8ffd8;
+  letter-spacing:1px;
+  opacity:0;
+  animation:fadeIn 1.5s forwards;
+  animation-delay:1.5s;
+}
+
+/* Progress Line */
+.progress{
+  width:120px;
+  height:3px;
+  background:rgba(255,255,255,0.2);
+  border-radius:10px;
+  margin-top:25px;
+  overflow:hidden;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#9eff6d;
+  animation:loadBar 3s forwards;
+}
+
+@keyframes loadBar{
+  0%{width:0%;}
+  100%{width:100%;}
+}
+
+@keyframes fadeIn{
+  to{opacity:1;}
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div id="text-container"></div>
+  <div class="tagline">Rental Alat Berat Pertanian</div>
+  <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+</div>
+
+<script>
+// ==================== KATA "Sumber Teknik" ====================
+const textContainer = document.getElementById('text-container');
+const text = "Sumber Teknik";
+const words = text.split(' ');
+
+// buat kata per baris
+words.forEach((word, wIndex)=>{
+  const wordDiv = document.createElement('div');
+  wordDiv.classList.add('word-box');
+
+  word.split('').forEach((char, index)=>{
+    const letterDiv = document.createElement('div');
+    letterDiv.classList.add('letter-box');
+    letterDiv.textContent = char;
+    wordDiv.appendChild(letterDiv);
+
+    // animasi bounce per huruf
+    setTimeout(()=>{
+      letterDiv.style.animation = "bounce 0.6s forwards";
+    }, index*150 + wIndex*500);
+  });
+
+  textContainer.appendChild(wordDiv);
+});
+
+// ==================== TRANSISI KE MENU ====================
+setTimeout(()=>{
+  document.getElementById("loading").style.opacity="0";
+  setTimeout(()=>{
+    window.location.href="menu.html";
+  },800);
+},3500);
+
+</script>
+
+</body>
+</html>
