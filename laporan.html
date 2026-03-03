@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Pekerjaan - Sumber Teknik</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}
+.app{width:100%;max-width:430px;background:#f7fbf8;height:100vh;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,0.25);}
+.header{padding:20px;background:linear-gradient(135deg,#0d5c2a,#1f8f45);color:white;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
+.back-btn{cursor:pointer;font-size:24px;color:white;}
+.header-text h1{font-size:1.1rem;font-weight:700;}
+.content{padding:18px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;flex:1;padding-bottom:80px;}
+.form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
+.form-card label{display:block;margin-bottom:6px;font-weight:600;color:#1c2b22;}
+.form-card input, .form-card select{width:100%;padding:10px;border-radius:12px;border:1px solid #d9e6dd;margin-bottom:12px;font-size:0.95rem;}
+.form-card input[readonly]{background:#e4efe8; cursor:not-allowed;}
+.submit-btn{width:100%;padding:12px;border:none;border-radius:12px;background:#1f8f45;color:white;font-weight:600;margin-top:10px;cursor:pointer;}
+.submit-btn:disabled{background:#a1c8a2; cursor:not-allowed;}
+.result-box{margin-top:12px;padding:12px;background:#e4f5ea;color:#1f8f45;border-radius:12px;font-weight:600;text-align:center;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+    <div class="header-text">
+      <h1>Laporan Pekerjaan</h1>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="form-card">
+      <label for="tanggal">Tanggal</label>
+      <input type="date" id="tanggal" readonly>
+
+      <label for="namaPetani">Nama Petani</label>
+      <input type="text" id="namaPetani">
+
+      <label for="jumlahKarungan">Jumlah Karungan</label>
+      <input type="number" id="jumlahKarungan">
+
+      <label for="namaOperator">Nama Operator</label>
+      <input type="text" id="namaOperator">
+
+      <label for="namaHelper">Nama Helper</label>
+      <input type="text" id="namaHelper">
+
+      <label for="jumlahHelper">Jumlah Helper</label>
+      <select id="jumlahHelper"></select>
+
+      <label for="hargaPerKarung">Harga per Karung</label>
+      <input type="number" id="hargaPerKarung">
+
+      <label for="lokasiKerja">Lokasi Kerja Aktif</label>
+      <select id="lokasiKerja"></select>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()">Submit</button>
+      <div class="result-box" id="resultBox" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxMMHqtzaV0Ng-f9Cn-Q9sB9TdrmvMCbNeqIOePxDksyVUNP8ofDFNsl7uts97NCShpFA/exec";
+
+function goBack(){ window.location.href="menu.html"; }
+
+// Set tanggal otomatis sesuai tanggal HP Indonesia
+const tanggalInput = document.getElementById("tanggal");
+const today = new Date();
+tanggalInput.value = today.toISOString().split('T')[0];
+
+// Isi dropdown jumlah helper 1-10
+const jumlahHelper = document.getElementById("jumlahHelper");
+for(let i=1;i<=10;i++){
+  const opt = document.createElement("option");
+  opt.value=i;
+  opt.text=i;
+  jumlahHelper.appendChild(opt);
+}
+
+// Ambil lokasi kerja aktif dari dashboard
+const lokasiSelect = document.getElementById("lokasiKerja");
+fetch(API_URL+"?action=getLokasi")
+.then(res=>res.json())
+.then(data=>{
+  if(data.lokasiKerjaAktif && data.lokasiKerjaAktif.length){
+    data.lokasiKerjaAktif.forEach(loc=>{
+      const opt = document.createElement("option");
+      opt.value=loc;
+      opt.text=loc;
+      lokasiSelect.appendChild(opt);
+    });
+  }
+});
+
+// Submit form (1x klik only)
+let submitting = false;
+function submitForm(){
+  if(submitting) return;
+  submitting = true;
+  document.getElementById("submitBtn").disabled = true;
+
+  const data = {
+    tanggal: tanggalInput.value,
+    namaPetani: document.getElementById("namaPetani").value,
+    jumlahKarungan: document.getElementById("jumlahKarungan").value,
+    namaOperator: document.getElementById("namaOperator").value,
+    namaHelper: document.getElementById("namaHelper").value,
+    jumlahHelper: document.getElementById("jumlahHelper").value,
+    hargaPerKarung: document.getElementById("hargaPerKarung").value,
+    lokasiKerja: document.getElementById("lokasiKerja").value
+  };
+
+  fetch(API_URL, {
+    method:"POST",
+    body: JSON.stringify(data)
+  })
+  .then(res=>res.json())
+  .then(resp=>{
+    submitting = false;
+    document.getElementById("submitBtn").disabled = false;
+    if(resp.status==="success"){
+      const box = document.getElementById("resultBox");
+      box.innerText = "Data berhasil tersimpan! Kode Transaksi: " + resp.kodeTransaksi;
+      box.style.display="block";
+
+      // reset form (kecuali tanggal)
+      document.querySelectorAll("#namaPetani, #jumlahKarungan, #namaOperator, #namaHelper, #hargaPerKarung").forEach(i=>i.value="");
+      jumlahHelper.selectedIndex=0;
+      lokasiSelect.selectedIndex=0;
+    }
+  })
+  .catch(err=>{
+    submitting = false;
+    document.getElementById("submitBtn").disabled = false;
+    alert("Terjadi kesalahan, coba lagi.");
+  });
+}
+</script>
+</body>
+</html>
