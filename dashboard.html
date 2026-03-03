@@ -24,6 +24,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
+  overflow:hidden;
 }
 
 .app{
@@ -37,7 +38,7 @@ body{
   box-shadow:0 0 40px rgba(0,0,0,0.25);
 }
 
-/* HEADER */
+/* HEADER FIX */
 .header{
   padding:20px;
   background:linear-gradient(135deg,#0d5c2a,#1f8f45);
@@ -45,6 +46,9 @@ body{
   display:flex;
   align-items:center;
   gap:12px;
+  position:sticky;
+  top:0;
+  z-index:5;
 }
 
 .back-btn{
@@ -75,6 +79,7 @@ body{
   display:flex;
   flex-direction:column;
   gap:16px;
+  padding-bottom:90px; /* aman dari taskbar HP */
 }
 
 /* CARD */
@@ -85,10 +90,16 @@ body{
   box-shadow:0 8px 25px rgba(0,0,0,0.08);
   transition:0.3s;
   border:1px solid #e4efe8;
+  cursor:pointer;
+
+  /* hapus highlight biru bawaan browser */
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  outline:none;
 }
 
 .card:active{
   transform:scale(0.98);
+  background:#e0e0e0; /* highlight hitam lembut sesuai bentuk */
 }
 
 .card-title{
@@ -115,6 +126,9 @@ body{
   align-items:center;
   background:#e4f5ea;
   color:#1f8f45;
+
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  outline:none;
 }
 
 .card-content{
@@ -179,6 +193,14 @@ body{
   outline:none;
 }
 
+.pin-input::-webkit-autofill,
+.pin-input:-webkit-autofill,
+.pin-input:-internal-autofill-selected {
+  background-color: white !important;
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+}
+
 .pin-btn{
   margin-top:15px;
   padding:12px;
@@ -206,14 +228,14 @@ body{
   <div class="pin-screen" id="pinScreen">
     <div class="pin-box">
       <h2>Akses Dashboard Internal</h2>
-      <input type="password" maxlength="4" class="pin-input" id="pinInput">
+      <input type="password" maxlength="4" class="pin-input" id="pinInput" autocomplete="off">
       <button class="pin-btn" onclick="checkPin()">Masuk Sistem</button>
       <div class="error" id="errorText">PIN salah</div>
     </div>
   </div>
 
   <div class="header">
-    <span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+    <span class="material-icons back-btn" onclick="goBack()">arrow_back_ios_new</span>
     <div class="header-text">
       <h1>Dashboard Operasional</h1>
       <div class="last-update" id="lastUpdate"></div>
