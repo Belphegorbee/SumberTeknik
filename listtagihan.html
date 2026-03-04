@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>List Tagihan - Sumber Teknik</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;user-select:none;-webkit-user-select:none;}
+body{background:linear-gradient(135deg,#0d5c2a,#1f8f45);display:flex;justify-content:center;height:100vh;}
+
+/* APP */
+.app{width:100%;max-width:430px;background:#f7fbf8;display:flex;flex-direction:column;height:100vh;}
+
+/* HEADER */
+.header{padding:20px;background:linear-gradient(135deg,#0d5c2a,#1f8f45);color:white;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;-webkit-user-select:none;}
+.back-btn{cursor:pointer;font-size:24px;color:white;}
+.header-text h1{font-size:1.1rem;font-weight:700;}
+
+/* CONTENT: scroll */
+.content{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;margin-bottom:80px;} /* margin bawah untuk bottom bar */
+
+/* FORM CARD */
+.form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);position:relative;overflow:hidden;}
+.input-container{position:relative;margin-bottom:16px;}
+.input-container input, .input-container select{
+  width:100%;
+  padding:14px 12px 14px 36px;
+  border:1px solid #d9e6dd;
+  border-radius:12px;
+  font-size:0.95rem;
+  background:white;
+}
+.input-container input:focus, .input-container select:focus{border-color:#1f8f45;}
+.input-container label{
+  position:absolute;
+  left:36px;
+  top:14px;
+  color:#4b5e55;
+  font-size:0.85rem;
+  pointer-events:none;
+  transition:0.2s;
+}
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label,
+.input-container select:focus + label,
+.input-container select:not([value=""]) + label{
+  top:-8px;
+  left:12px;
+  font-size:0.7rem;
+  background:white;
+  padding:0 4px;
+  color:#1f8f45;
+}
+
+/* Icons inside input */
+.input-container .material-icons{
+  position:absolute;
+  left:8px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#1f8f45;
+  font-size:20px;
+}
+
+/* Tap highlight mengikuti icon */
+.tap-highlight{
+  -webkit-tap-highlight-color: transparent;
+  outline:none;
+  border-radius:12px;
+}
+.tap-highlight:active{
+  background:#00000022;
+}
+
+/* TABLE */
+.table-scroll{max-height:300px;overflow-y:auto;} /* scroll vertical tabel */
+.table-scroll::-webkit-scrollbar { width:6px; }
+.table-scroll::-webkit-scrollbar-thumb { background:#1f8f45; border-radius:3px; }
+
+.table-container{overflow-x:auto;}
+.tagihan-table{width:100%;border-collapse:collapse;}
+.tagihan-table th, .tagihan-table td{padding:8px 6px;text-align:left;border-bottom:1px solid #ddd;font-size:0.85rem;}
+.tagihan-table th{background:#e6f2eb;color:#1f8f45;}
+
+/* BOTTOM BAR: total tagihan + submit */
+.bottom-bar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  max-width:430px;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding:10px 16px;
+  background:white;
+  box-shadow:0 -4px 10px rgba(0,0,0,0.1);
+  z-index:20;
+  box-sizing:border-box;
+}
+.total-tagihan{
+  color:#1f8f45;
+  font-weight:600;
+  font-size:0.95rem;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.submit-btn{
+  flex-shrink:0;
+  padding:10px 16px;
+  border:none;
+  border-radius:12px;
+  background:#1f8f45;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+  font-size:0.95rem;
+  -webkit-tap-highlight-color: transparent;
+}
+.submit-btn:active{background:#00000022;}
+.submit-btn:disabled{background:#a1c8a2;cursor:not-allowed;}
+
+/* Anti-copy */
+body, .app, .header, .content, .form-card, label{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
+body{-webkit-touch-callout:none;}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="header">
+    <span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+    <div class="header-text"><h1>List Tagihan</h1></div>
+  </div>
+
+  <div class="content">
+
+    <div class="form-card">
+
+      <div class="input-container">
+        <span class="material-icons">person</span>
+        <input type="text" id="namaPetani" placeholder=" " required>
+        <label for="namaPetani">Nama Petani</label>
+      </div>
+      <div class="input-container">
+        <span class="material-icons">calendar_today</span>
+        <input type="date" id="tanggalMulai" class="tap-highlight" placeholder=" " required>
+        <label for="tanggalMulai">Tanggal Mulai</label>
+      </div>
+      <div class="input-container">
+        <span class="material-icons">calendar_today</span>
+        <input type="date" id="tanggalAkhir" class="tap-highlight" placeholder=" " required>
+        <label for="tanggalAkhir">Tanggal Akhir</label>
+      </div>
+
+      <div class="table-scroll table-container">
+        <table class="tagihan-table">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Karungan</th>
+              <th>Harga</th>
+              <th>Lokasi</th>
+              <th>Kode</th>
+              <th>Tagihan</th>
+            </tr>
+          </thead>
+          <tbody id="tagihanBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Bottom bar -->
+<div class="bottom-bar">
+  <div class="total-tagihan">Total Tagihan: <span id="totalValue">0</span></div>
+  <button class="submit-btn" id="submitBtn" onclick="submitTrigger()">Cek Tagihan</button>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMMHqtzaV0Ng-f9Cn-Q9sB9TdrmvMCbNeqIOePxDksyVUNP8ofDFNsl7uts97NCShpFA/exec";
+
+function goBack(){ window.location.href="menu.html"; }
+
+let submitting=false;
+function submitTrigger(){
+  if(submitting) return;
+  submitting=true;
+  document.getElementById("submitBtn").disabled=true;
+
+  const data={
+    namaPetani: document.getElementById("namaPetani").value,
+    tanggalMulai: document.getElementById("tanggalMulai").value,
+    tanggalAkhir: document.getElementById("tanggalAkhir").value
+  };
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body: JSON.stringify(data)
+  })
+  .then(res=>res.json())
+  .then(resp=>{
+    submitting=false;
+    document.getElementById("submitBtn").disabled=false;
+    if(resp.status==="success"){
+      fetchTagihan();
+    }
+  })
+  .catch(err=>{
+    submitting=false;
+    document.getElementById("submitBtn").disabled=false;
+    alert("Terjadi kesalahan, coba lagi.");
+  });
+}
+
+function fetchTagihan(){
+  fetch(SCRIPT_URL+"?action=getTagihan")
+  .then(res=>res.json())
+  .then(data=>{
+    const tbody = document.getElementById("tagihanBody");
+    tbody.innerHTML = "";
+    const totalEl = document.getElementById("totalValue");
+    if(!data.dataTagihan || !data.dataTagihan.length){
+      totalEl.textContent = "0";
+      tbody.innerHTML = "<tr><td colspan='6'>Tidak ada tagihan.</td></tr>";
+      return;
+    }
+
+    totalEl.textContent = data.dataTagihan[0].totalTagihan;
+
+    data.dataTagihan.forEach(t=>{
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${t.tanggal}</td>
+        <td>${t.jumlahKarungan}</td>
+        <td>Rp ${t.hargaPerKarung}</td>
+        <td>${t.lokasiKerja}</td>
+        <td>${t.kodeTransaksi}</td>
+        <td>Rp ${t.tagihan}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  });
+}
+
+window.addEventListener("load", fetchTagihan);
+</script>
+</body>
+</html>
