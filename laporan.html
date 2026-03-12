@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laporan Pekerjaan - Sumber Teknik</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -13,268 +14,347 @@ body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;jus
 .app{width:100%;max-width:430px;background:#f7fbf8;height:100vh;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,0.25);}
 
 /* HEADER */
-.header{padding:20px;background:linear-gradient(135deg,#0d5c2a,#1f8f45);color:white;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;-webkit-user-select:none;}
+.header{padding:20px;background:linear-gradient(135deg,#0d5c2a,#1f8f45);color:white;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
 .back-btn{cursor:pointer;font-size:24px;color:white;}
 .header-text h1{font-size:1.1rem;font-weight:700;}
 
-/* CONTENT: hanya form scroll */
+/* CONTENT */
 .content{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding:18px;}
 
-/* FORM CARD */
-.form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);position:relative;overflow:hidden;}
+.form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
 
-/* Tap effect hitam khusus tanggal, helper, lokasi */
+/* Tap highlight */
 .tap-highlight{
-  transition:0.15s;
-  background:#00000022;
+transition:0.15s;
+background:#00000022;
 }
-input.tap-highlight:active, select.tap-highlight:active{
-  background:#00000022;
-}
-input.tap-highlight, select.tap-highlight{
-  -webkit-tap-highlight-color: transparent; /* hilangkan biru default iOS/Chrome mobile */
-  outline: none; /* hilangkan outline desktop */
+input.tap-highlight,select.tap-highlight{
+-webkit-tap-highlight-color:transparent;
+outline:none;
 }
 
 /* Floating label */
 .input-container{position:relative;margin-bottom:16px;}
 .input-container input,.input-container select{
-  width:100%;
-  padding:14px 12px 14px 36px;
-  border:1px solid #d9e6dd;
-  border-radius:12px;
-  font-size:0.95rem;
-  background:white;
+width:100%;
+padding:14px 12px 14px 36px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+background:white;
 }
+
 .input-container input:focus,.input-container select:focus{
-  border-color:#1f8f45;
+border-color:#1f8f45;
 }
+
 .input-container label{
-  position:absolute;
-  left:36px;
-  top:14px;
-  color:#4b5e55;
-  font-size:0.85rem;
-  pointer-events:none;
-  transition:0.2s;
+position:absolute;
+left:36px;
+top:14px;
+color:#4b5e55;
+font-size:0.85rem;
+pointer-events:none;
+transition:0.2s;
 }
+
 .input-container input:focus + label,
 .input-container input:not(:placeholder-shown) + label,
 .input-container select:focus + label,
 .input-container select:not([value=""]) + label{
-  top:-8px;
-  left:12px;
-  font-size:0.7rem;
-  background:white;
-  padding:0 4px;
-  color:#1f8f45;
+top:-8px;
+left:12px;
+font-size:0.7rem;
+background:white;
+padding:0 4px;
+color:#1f8f45;
 }
 
-/* Icons inside input */
 .input-container .material-icons{
-  position:absolute;
-  left:8px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#1f8f45;
-  font-size:20px;
+position:absolute;
+left:8px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+font-size:20px;
 }
 
-/* Button */
-.submit-btn{width:100%;padding:12px;border:none;border-radius:12px;background:#1f8f45;color:white;font-weight:600;margin-top:10px;cursor:pointer;transition:0.2s;}
-.submit-btn:active{background:#000000dd;}
-.submit-btn:disabled{background:#a1c8a2;cursor:not-allowed;}
+/* button */
+.submit-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+margin-top:10px;
+cursor:pointer;
+}
 
-/* Anti-copy */
-body, .app, .header, .content, .form-card, label{user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}
-body{-webkit-touch-callout:none;}
+.submit-btn:disabled{
+background:#a1c8a2;
+cursor:not-allowed;
+}
 
-/* POPUP KODE TRANSAKSI */
-#popupKode{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;opacity:0;transition:opacity 0.25s ease;}
-#popupContent{background:white;padding:24px 32px;border-radius:16px;text-align:center;max-width:80%;box-shadow:0 8px 25px rgba(0,0,0,0.3);transform:scale(0.8);transition:transform 0.25s ease;}
-#popupContent p{margin-bottom:16px;}
-#popupContent button{padding:10px 24px;border:none;border-radius:12px;background:#1f8f45;color:white;font-weight:600;cursor:pointer;}
+/* popup */
+#popupKode{
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+z-index:1000;
+opacity:0;
+transition:opacity 0.25s ease;
+}
+
+#popupContent{
+background:white;
+padding:24px 32px;
+border-radius:16px;
+text-align:center;
+max-width:80%;
+box-shadow:0 8px 25px rgba(0,0,0,0.3);
+transform:scale(0.8);
+transition:transform 0.25s ease;
+}
+
+#popupContent button{
+padding:10px 24px;
+border:none;
+border-radius:12px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
 </style>
 </head>
 
 <body>
+
 <div class="app">
 
-  <div class="header">
-    <span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
-    <div class="header-text">
-      <h1>Laporan Pekerjaan</h1>
-    </div>
-  </div>
-
-  <div class="content">
-
-    <div class="form-card">
-
-      <div class="input-container">
-        <span class="material-icons">calendar_today</span>
-        <input type="date" id="tanggal" class="tap-highlight" placeholder=" " readonly>
-        <label for="tanggal">Tanggal</label>
-      </div>
-
-      <div class="input-container">
-        <span class="material-icons">person</span>
-        <input type="text" id="namaPetani" placeholder=" ">
-        <label for="namaPetani">Nama Petani</label>
-      </div>
-
-      <div class="input-container">
-        <span class="material-icons">inventory_2</span>
-        <input type="number" id="jumlahKarungan" placeholder=" ">
-        <label for="jumlahKarungan">Jumlah Karungan</label>
-      </div>
-
-      <div class="input-container">
-        <span class="material-icons">construction</span>
-        <input type="text" id="namaOperator" placeholder=" ">
-        <label for="namaOperator">Nama Operator</label>
-      </div>
-
-      <div class="input-container">
-        <span class="material-icons">group</span>
-        <input type="text" id="namaHelper" placeholder=" ">
-        <label for="namaHelper">Nama Helper</label>
-      </div>
-
-      <div class="input-container">
-        <span class="material-icons">format_list_numbered</span>
-        <select id="jumlahHelper" class="tap-highlight" placeholder=" ">
-          <option value="">Pilih Jumlah Helper</option>
-        </select>
-        <label for="jumlahHelper">Jumlah Helper</label>
-      </div>
-
-      <div class="input-container">
-        <span class="material-icons">attach_money</span>
-        <input type="number" id="hargaPerKarung" placeholder=" ">
-        <label for="hargaPerKarung">Harga per Karung</label>
-      </div>
-
-      <div class="input-container">
-        <span class="material-icons">location_on</span>
-        <select id="lokasiKerja" class="tap-highlight" placeholder=" "></select>
-        <label for="lokasiKerja">Lokasi Kerja Aktif</label>
-      </div>
-
-      <button class="submit-btn" id="submitBtn" onclick="submitForm()">Submit</button>
-
-    </div>
-
-  </div>
+<div class="header">
+<span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+<div class="header-text">
+<h1>Laporan Pekerjaan</h1>
+</div>
 </div>
 
-<!-- POPUP KODE TRANSAKSI -->
+<div class="content">
+
+<div class="form-card">
+
+<div class="input-container">
+<span class="material-icons">calendar_today</span>
+<input type="date" id="tanggal" class="tap-highlight" placeholder=" " readonly>
+<label>Tanggal</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">person</span>
+<input type="text" id="namaPetani" placeholder=" ">
+<label>Nama Petani</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">inventory_2</span>
+<input type="number" id="jumlahKarungan" placeholder=" ">
+<label>Jumlah Karungan</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">construction</span>
+<select id="namaOperator" class="tap-highlight">
+<option value="">Pilih Operator</option>
+</select>
+<label>Nama Operator</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">group</span>
+<input type="text" id="namaHelper" placeholder=" ">
+<label>Nama Helper</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">format_list_numbered</span>
+<select id="jumlahHelper" class="tap-highlight">
+<option value="">Pilih Jumlah Helper</option>
+</select>
+<label>Jumlah Helper</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">attach_money</span>
+<input type="number" id="hargaPerKarung" placeholder=" ">
+<label>Harga per Karung</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">location_on</span>
+<select id="lokasiKerja" class="tap-highlight"></select>
+<label>Lokasi Kerja Aktif</label>
+</div>
+
+<button class="submit-btn" id="submitBtn" onclick="submitForm()">Submit</button>
+
+</div>
+</div>
+</div>
+
 <div id="popupKode">
-  <div id="popupContent">
-    <p>Data berhasil tersimpan!</p>
-    <p id="kodeTransaksiPopup" style="font-size:1.1rem; font-weight:700; color:#1f8f45; margin-bottom:24px;"></p>
-    <button onclick="closePopup()">Tutup</button>
-  </div>
+<div id="popupContent">
+<p>Data berhasil tersimpan!</p>
+<p id="kodeTransaksiPopup" style="font-size:1.1rem;font-weight:700;color:#1f8f45;margin-bottom:24px;"></p>
+<button onclick="closePopup()">Tutup</button>
+</div>
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxMMHqtzaV0Ng-f9Cn-Q9sB9TdrmvMCbNeqIOePxDksyVUNP8ofDFNsl7uts97NCShpFA/exec";
 
-function goBack(){ window.location.href="menu.html"; }
+const API_URL="https://script.google.com/macros/s/AKfycbxMMHqtzaV0Ng-f9Cn-Q9sB9TdrmvMCbNeqIOePxDksyVUNP8ofDFNsl7uts97NCShpFA/exec";
 
-// Tanggal otomatis
-const tanggalInput = document.getElementById("tanggal");
-const today = new Date();
-tanggalInput.value = today.toISOString().split('T')[0];
-
-// Dropdown helper
-const jumlahHelper = document.getElementById("jumlahHelper");
-for(let i=1;i<=10;i++){
-  const opt = document.createElement("option");
-  opt.value=i;
-  opt.text=i;
-  jumlahHelper.appendChild(opt);
+function goBack(){
+window.location.href="menu.html";
 }
 
-// Lokasi kerja aktif
-const lokasiSelect = document.getElementById("lokasiKerja");
-fetch(API_URL+"?action=getLokasi")
+/* tanggal otomatis */
+const tanggalInput=document.getElementById("tanggal");
+tanggalInput.value=new Date().toISOString().split("T")[0];
+
+/* helper dropdown */
+const jumlahHelper=document.getElementById("jumlahHelper");
+for(let i=1;i<=10;i++){
+let opt=document.createElement("option");
+opt.value=i;
+opt.text=i;
+jumlahHelper.appendChild(opt);
+}
+
+/* operator & lokasi */
+const lokasiSelect=document.getElementById("lokasiKerja");
+const operatorSelect=document.getElementById("namaOperator");
+
+fetch(API_URL)
 .then(res=>res.json())
 .then(data=>{
-  if(data.lokasiKerjaAktif && data.lokasiKerjaAktif.length){
-    data.lokasiKerjaAktif.forEach(loc=>{
-      const opt = document.createElement("option");
-      opt.value=loc;
-      opt.text=loc;
-      lokasiSelect.appendChild(opt);
-    });
-  }
+
+if(data.lokasiKerjaAktif){
+data.lokasiKerjaAktif.forEach(loc=>{
+let opt=document.createElement("option");
+opt.value=loc;
+opt.text=loc;
+lokasiSelect.appendChild(opt);
+});
+}
+
+if(data.totalUnitAktif){
+data.totalUnitAktif.forEach(op=>{
+let opt=document.createElement("option");
+opt.value=op;
+opt.text=op;
+operatorSelect.appendChild(opt);
+});
+}
+
 });
 
-// POPUP
+/* popup */
 function showPopup(kode){
-  const popup = document.getElementById("popupKode");
-  const content = document.getElementById("popupContent");
-  document.getElementById("kodeTransaksiPopup").innerText = kode;
-  popup.style.display = "flex";
-  void popup.offsetWidth; // trigger reflow
-  popup.style.opacity = "1";
-  content.style.transform = "scale(1)";
+let popup=document.getElementById("popupKode");
+let content=document.getElementById("popupContent");
+
+document.getElementById("kodeTransaksiPopup").innerText=kode;
+
+popup.style.display="flex";
+void popup.offsetWidth;
+popup.style.opacity="1";
+content.style.transform="scale(1)";
 }
+
 function closePopup(){
-  const popup = document.getElementById("popupKode");
-  const content = document.getElementById("popupContent");
-  popup.style.opacity = "0";
-  content.style.transform = "scale(0.8)";
-  setTimeout(()=>popup.style.display="none", 250);
+let popup=document.getElementById("popupKode");
+let content=document.getElementById("popupContent");
+
+popup.style.opacity="0";
+content.style.transform="scale(0.8)";
+
+setTimeout(()=>popup.style.display="none",250);
 }
-document.getElementById("popupKode").addEventListener("click", (e)=>{
-  if(e.target.id === "popupKode"){
-    closePopup();
-  }
+
+document.getElementById("popupKode").addEventListener("click",(e)=>{
+if(e.target.id==="popupKode") closePopup();
 });
 
-// Submit form
+/* submit */
+
 let submitting=false;
+
 function submitForm(){
-  if(submitting) return;
-  submitting=true;
-  document.getElementById("submitBtn").disabled=true;
 
-  const data={
-    tanggal: tanggalInput.value,
-    namaPetani: document.getElementById("namaPetani").value,
-    jumlahKarungan: document.getElementById("jumlahKarungan").value,
-    namaOperator: document.getElementById("namaOperator").value,
-    namaHelper: document.getElementById("namaHelper").value,
-    jumlahHelper: document.getElementById("jumlahHelper").value,
-    hargaPerKarung: document.getElementById("hargaPerKarung").value,
-    lokasiKerja: document.getElementById("lokasiKerja").value
-  };
+if(submitting) return;
 
-  fetch(API_URL,{
-    method:"POST",
-    body: JSON.stringify(data)
-  })
-  .then(res=>res.json())
-  .then(resp=>{
-    submitting=false;
-    document.getElementById("submitBtn").disabled=false;
-    if(resp.status==="success"){
-      showPopup(resp.kodeTransaksi);
+submitting=true;
 
-      // reset form
-      document.querySelectorAll("#namaPetani, #jumlahKarungan, #namaOperator, #namaHelper, #hargaPerKarung").forEach(i=>i.value="");
-      jumlahHelper.selectedIndex=0;
-      lokasiSelect.selectedIndex=0;
-    }
-  })
-  .catch(err=>{
-    submitting=false;
-    document.getElementById("submitBtn").disabled=false;
-    alert("Terjadi kesalahan, coba lagi.");
-  });
+document.getElementById("submitBtn").disabled=true;
+
+const data={
+
+tanggal:tanggalInput.value,
+namaPetani:document.getElementById("namaPetani").value,
+jumlahKarungan:document.getElementById("jumlahKarungan").value,
+namaOperator:operatorSelect.value,
+namaHelper:document.getElementById("namaHelper").value,
+jumlahHelper:jumlahHelper.value,
+hargaPerKarung:document.getElementById("hargaPerKarung").value,
+lokasiKerja:lokasiSelect.value
+
+};
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify(data)
+})
+
+.then(res=>res.json())
+
+.then(resp=>{
+
+submitting=false;
+document.getElementById("submitBtn").disabled=false;
+
+if(resp.status==="success"){
+
+showPopup(resp.kodeTransaksi);
+
+/* reset */
+document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung")
+.forEach(i=>i.value="");
+
+jumlahHelper.selectedIndex=0;
+lokasiSelect.selectedIndex=0;
+operatorSelect.selectedIndex=0;
+
 }
+
+})
+
+.catch(()=>{
+submitting=false;
+document.getElementById("submitBtn").disabled=false;
+alert("Terjadi kesalahan, coba lagi.");
+});
+
+}
+
 </script>
+
 </body>
 </html>
