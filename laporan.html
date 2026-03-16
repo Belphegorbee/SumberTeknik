@@ -79,28 +79,50 @@ color:#1f8f45;
 font-size:20px;
 }
 
-/* helper dropdown */
+/* HELPER DROPDOWN */
 .helper-box{
 position:absolute;
 top:100%;
 left:0;
 right:0;
-background:white;
+background:#ffffff;
 border:1px solid #d9e6dd;
-border-radius:10px;
-max-height:150px;
-overflow:auto;
+border-radius:12px;
+max-height:160px;
+overflow-y:auto;
 display:none;
-z-index:20;
-padding:8px;
+z-index:30;
+margin-top:6px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+padding:6px 8px;
 }
 
 .helper-item{
 display:flex;
 align-items:center;
-gap:6px;
-padding:4px 0;
+gap:8px;
+padding:8px 6px;
+border-radius:8px;
 font-size:0.9rem;
+cursor:pointer;
+transition:background 0.15s;
+}
+
+.helper-item:hover{
+background:#f1f6f3;
+}
+
+.helper-item input{
+accent-color:#1f8f45;
+cursor:pointer;
+}
+
+/* NOTIF HELPER */
+.helper-warning{
+font-size:0.75rem;
+color:#c0392b;
+margin-top:4px;
+display:none;
 }
 
 /* button */
@@ -206,6 +228,7 @@ cursor:pointer;
 <input type="text" id="namaHelper" placeholder=" " readonly>
 <label>Nama Helper</label>
 <div id="helperBox" class="helper-box"></div>
+<div id="helperWarning" class="helper-warning">Maksimal 2 helper</div>
 </div>
 
 <div class="input-container">
@@ -250,11 +273,9 @@ function goBack(){
 window.location.href="menu.html";
 }
 
-/* tanggal otomatis */
 const tanggalInput=document.getElementById("tanggal");
 tanggalInput.value=new Date().toISOString().split("T")[0];
 
-/* helper dropdown */
 const jumlahHelper=document.getElementById("jumlahHelper");
 for(let i=1;i<=2;i++){
 let opt=document.createElement("option");
@@ -263,11 +284,11 @@ opt.text=i;
 jumlahHelper.appendChild(opt);
 }
 
-/* operator & lokasi */
 const lokasiSelect=document.getElementById("lokasiKerja");
 const operatorSelect=document.getElementById("namaOperator");
 const helperBox=document.getElementById("helperBox");
 const helperInput=document.getElementById("namaHelper");
+const helperWarning=document.getElementById("helperWarning");
 
 fetch(API_URL)
 .then(res=>res.json())
@@ -291,7 +312,6 @@ operatorSelect.appendChild(opt);
 });
 }
 
-/* helper list */
 if(data.totalTransaksi){
 
 data.totalTransaksi.forEach(nama=>{
@@ -311,8 +331,15 @@ cb.addEventListener("change",()=>{
 let checked=helperBox.querySelectorAll("input:checked");
 
 if(checked.length>2){
+
 cb.checked=false;
-alert("Maksimal 2 helper");
+
+helperWarning.style.display="block";
+
+setTimeout(()=>{
+helperWarning.style.display="none";
+},2000);
+
 return;
 }
 
@@ -322,7 +349,6 @@ helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
 
 div.appendChild(cb);
 div.appendChild(label);
-
 helperBox.appendChild(div);
 
 });
@@ -331,13 +357,11 @@ helperBox.appendChild(div);
 
 });
 
-/* buka dropdown helper */
 helperInput.addEventListener("click",()=>{
 helperBox.style.display=
 helperBox.style.display==="block"?"none":"block";
 });
 
-/* popup */
 function showPopup(kode){
 let popup=document.getElementById("popupKode");
 let content=document.getElementById("popupContent");
@@ -364,8 +388,6 @@ document.getElementById("popupKode").addEventListener("click",(e)=>{
 if(e.target.id==="popupKode") closePopup();
 });
 
-/* submit */
-
 let submitting=false;
 
 function submitForm(){
@@ -377,16 +399,14 @@ submitting=true;
 document.getElementById("submitBtn").disabled=true;
 
 const data={
-
 tanggal:tanggalInput.value,
 namaPetani:document.getElementById("namaPetani").value,
 jumlahKarungan:document.getElementById("jumlahKarungan").value,
 namaOperator:operatorSelect.value,
-namaHelper:document.getElementById("namaHelper").value,
+namaHelper:helperInput.value,
 jumlahHelper:jumlahHelper.value,
 hargaPerKarung:document.getElementById("hargaPerKarung").value,
 lokasiKerja:lokasiSelect.value
-
 };
 
 fetch(API_URL,{
@@ -395,7 +415,6 @@ body:JSON.stringify(data)
 })
 
 .then(res=>res.json())
-
 .then(resp=>{
 
 submitting=false;
@@ -405,7 +424,6 @@ if(resp.status==="success"){
 
 showPopup(resp.kodeTransaksi);
 
-/* reset */
 document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung")
 .forEach(i=>i.value="");
 
