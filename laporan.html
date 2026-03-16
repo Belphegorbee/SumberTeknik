@@ -58,6 +58,18 @@ pointer-events:none;
 transition:0.2s;
 }
 
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label,
+.input-container select:focus + label,
+.input-container select:not([value=""]) + label{
+top:-8px;
+left:12px;
+font-size:0.7rem;
+background:white;
+padding:0 4px;
+color:#1f8f45;
+}
+
 .input-container .material-icons{
 position:absolute;
 left:8px;
@@ -67,13 +79,27 @@ color:#1f8f45;
 font-size:20px;
 }
 
-/* helper list */
+/* helper dropdown */
+.helper-box{
+position:absolute;
+top:100%;
+left:0;
+right:0;
+background:white;
+border:1px solid #d9e6dd;
+border-radius:10px;
+max-height:150px;
+overflow:auto;
+display:none;
+z-index:20;
+padding:8px;
+}
+
 .helper-item{
 display:flex;
 align-items:center;
 gap:6px;
-padding-left:36px;
-margin-bottom:6px;
+padding:4px 0;
 font-size:0.9rem;
 }
 
@@ -177,8 +203,9 @@ cursor:pointer;
 
 <div class="input-container">
 <span class="material-icons">group</span>
-<div id="namaHelper"></div>
+<input type="text" id="namaHelper" placeholder=" " readonly>
 <label>Nama Helper</label>
+<div id="helperBox" class="helper-box"></div>
 </div>
 
 <div class="input-container">
@@ -236,9 +263,11 @@ opt.text=i;
 jumlahHelper.appendChild(opt);
 }
 
+/* operator & lokasi */
 const lokasiSelect=document.getElementById("lokasiKerja");
 const operatorSelect=document.getElementById("namaOperator");
-const helperContainer=document.getElementById("namaHelper");
+const helperBox=document.getElementById("helperBox");
+const helperInput=document.getElementById("namaHelper");
 
 fetch(API_URL)
 .then(res=>res.json())
@@ -262,41 +291,50 @@ operatorSelect.appendChild(opt);
 });
 }
 
-/* helper list dari dashboard */
+/* helper list */
 if(data.totalTransaksi){
 
-data.totalTransaksi.forEach(name=>{
+data.totalTransaksi.forEach(nama=>{
 
 let div=document.createElement("div");
 div.className="helper-item";
 
-let checkbox=document.createElement("input");
-checkbox.type="checkbox";
-checkbox.value=name;
-
-checkbox.addEventListener("change",()=>{
-
-let checked=document.querySelectorAll("#namaHelper input:checked");
-
-if(checked.length>2){
-checkbox.checked=false;
-alert("Maksimal 2 helper");
-}
-
-});
+let cb=document.createElement("input");
+cb.type="checkbox";
+cb.value=nama;
 
 let label=document.createElement("span");
-label.textContent=name;
+label.textContent=nama;
 
-div.appendChild(checkbox);
+cb.addEventListener("change",()=>{
+
+let checked=helperBox.querySelectorAll("input:checked");
+
+if(checked.length>2){
+cb.checked=false;
+alert("Maksimal 2 helper");
+return;
+}
+
+helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
+
+});
+
+div.appendChild(cb);
 div.appendChild(label);
 
-helperContainer.appendChild(div);
+helperBox.appendChild(div);
 
 });
 
 }
 
+});
+
+/* buka dropdown helper */
+helperInput.addEventListener("click",()=>{
+helperBox.style.display=
+helperBox.style.display==="block"?"none":"block";
 });
 
 /* popup */
@@ -338,17 +376,13 @@ submitting=true;
 
 document.getElementById("submitBtn").disabled=true;
 
-const helpers=Array.from(document.querySelectorAll("#namaHelper input:checked"))
-.map(cb=>cb.value)
-.join(", ");
-
 const data={
 
 tanggal:tanggalInput.value,
 namaPetani:document.getElementById("namaPetani").value,
 jumlahKarungan:document.getElementById("jumlahKarungan").value,
 namaOperator:operatorSelect.value,
-namaHelper:helpers,
+namaHelper:document.getElementById("namaHelper").value,
 jumlahHelper:jumlahHelper.value,
 hargaPerKarung:document.getElementById("hargaPerKarung").value,
 lokasiKerja:lokasiSelect.value
@@ -372,11 +406,8 @@ if(resp.status==="success"){
 showPopup(resp.kodeTransaksi);
 
 /* reset */
-document.querySelectorAll("#namaPetani,#jumlahKarungan,#hargaPerKarung")
+document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung")
 .forEach(i=>i.value="");
-
-document.querySelectorAll("#namaHelper input")
-.forEach(cb=>cb.checked=false);
 
 jumlahHelper.selectedIndex=0;
 lokasiSelect.selectedIndex=0;
