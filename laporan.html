@@ -13,10 +13,12 @@
 body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}
 .app{width:100%;max-width:430px;background:#f7fbf8;height:100vh;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,0.25);}
 
+/* HEADER */
 .header{padding:20px;background:linear-gradient(135deg,#0d5c2a,#1f8f45);color:white;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
 .back-btn{cursor:pointer;font-size:24px;color:white;}
 .header-text h1{font-size:1.1rem;font-weight:700;}
 
+/* CONTENT */
 .content{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding:18px;}
 
 .form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
@@ -31,6 +33,7 @@ outline:none;
 }
 
 .input-container{position:relative;margin-bottom:16px;}
+
 .input-container input,.input-container select{
 width:100%;
 padding:14px 12px 14px 36px;
@@ -38,10 +41,6 @@ border:1px solid #d9e6dd;
 border-radius:12px;
 font-size:0.95rem;
 background:white;
-}
-
-.input-container input:focus,.input-container select:focus{
-border-color:#1f8f45;
 }
 
 .input-container label{
@@ -54,18 +53,6 @@ pointer-events:none;
 transition:0.2s;
 }
 
-.input-container input:focus + label,
-.input-container input:not(:placeholder-shown) + label,
-.input-container select:focus + label,
-.input-container select:not([value=""]) + label{
-top:-8px;
-left:12px;
-font-size:0.7rem;
-background:white;
-padding:0 4px;
-color:#1f8f45;
-}
-
 .input-container .material-icons{
 position:absolute;
 left:8px;
@@ -73,6 +60,16 @@ top:50%;
 transform:translateY(-50%);
 color:#1f8f45;
 font-size:20px;
+}
+
+/* helper checkbox */
+.helper-item{
+display:flex;
+align-items:center;
+gap:6px;
+margin-bottom:6px;
+font-size:0.9rem;
+padding-left:36px;
 }
 
 .submit-btn{
@@ -92,6 +89,7 @@ background:#a1c8a2;
 cursor:not-allowed;
 }
 
+/* popup */
 #popupKode{
 display:none;
 position:fixed;
@@ -126,13 +124,6 @@ background:#1f8f45;
 color:white;
 font-weight:600;
 cursor:pointer;
-}
-
-.helper-item{
-display:block;
-margin-left:30px;
-margin-bottom:6px;
-font-size:0.9rem;
 }
 </style>
 </head>
@@ -180,8 +171,8 @@ font-size:0.9rem;
 
 <div class="input-container">
 <span class="material-icons">group</span>
-<div id="helperList"></div>
-<label>Nama Helper</label>
+<div id="namaHelper"></div>
+<label>Nama Helper (maks 2)</label>
 </div>
 
 <div class="input-container">
@@ -239,7 +230,7 @@ jumlahHelper.appendChild(opt);
 
 const lokasiSelect=document.getElementById("lokasiKerja");
 const operatorSelect=document.getElementById("namaOperator");
-const helperList=document.getElementById("helperList");
+const helperContainer=document.getElementById("namaHelper");
 
 fetch(API_URL)
 .then(res=>res.json())
@@ -263,42 +254,41 @@ operatorSelect.appendChild(opt);
 });
 }
 
+/* HELPER LIST */
+
 if(data.totalTransaksi){
-data.totalTransaksi.forEach(helper=>{
-let label=document.createElement("label");
-label.className="helper-item";
+data.totalTransaksi.forEach(name=>{
 
-let cb=document.createElement("input");
-cb.type="checkbox";
-cb.value=helper;
-cb.className="helperCheck";
+let div=document.createElement("div");
+div.className="helper-item";
 
-label.appendChild(cb);
-label.append(" "+helper);
+let checkbox=document.createElement("input");
+checkbox.type="checkbox";
+checkbox.value=name;
 
-helperList.appendChild(label);
-});
-}
+checkbox.addEventListener("change",()=>{
 
-});
-
-/* batasi max 2 helper */
-document.addEventListener("change",function(e){
-
-if(e.target.classList.contains("helperCheck")){
-
-const checked=document.querySelectorAll(".helperCheck:checked");
+let checked=document.querySelectorAll("#namaHelper input:checked");
 
 if(checked.length>2){
-e.target.checked=false;
-alert("Maksimal hanya 2 helper");
-}
-
+checkbox.checked=false;
+alert("Maksimal 2 helper");
 }
 
 });
 
-/* popup */
+let label=document.createElement("span");
+label.textContent=name;
+
+div.appendChild(checkbox);
+div.appendChild(label);
+
+helperContainer.appendChild(div);
+
+});
+}
+
+});
 
 function showPopup(kode){
 let popup=document.getElementById("popupKode");
@@ -317,7 +307,7 @@ let popup=document.getElementById("popupKode");
 let content=document.getElementById("popupContent");
 
 popup.style.opacity="0";
-content.style.transform="scale(0.8)";
+content.style.transform="scale(0.8)");
 
 setTimeout(()=>popup.style.display="none",250);
 }
@@ -333,10 +323,9 @@ function submitForm(){
 if(submitting) return;
 
 submitting=true;
-
 document.getElementById("submitBtn").disabled=true;
 
-const helperDipilih=[...document.querySelectorAll(".helperCheck:checked")]
+const helpers=Array.from(document.querySelectorAll("#namaHelper input:checked"))
 .map(cb=>cb.value)
 .join(", ");
 
@@ -346,7 +335,7 @@ tanggal:tanggalInput.value,
 namaPetani:document.getElementById("namaPetani").value,
 jumlahKarungan:document.getElementById("jumlahKarungan").value,
 namaOperator:operatorSelect.value,
-namaHelper:helperDipilih,
+namaHelper:helpers,
 jumlahHelper:jumlahHelper.value,
 hargaPerKarung:document.getElementById("hargaPerKarung").value,
 lokasiKerja:lokasiSelect.value
@@ -372,7 +361,7 @@ showPopup(resp.kodeTransaksi);
 document.querySelectorAll("#namaPetani,#jumlahKarungan,#hargaPerKarung")
 .forEach(i=>i.value="");
 
-document.querySelectorAll(".helperCheck")
+document.querySelectorAll("#namaHelper input")
 .forEach(cb=>cb.checked=false);
 
 jumlahHelper.selectedIndex=0;
