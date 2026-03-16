@@ -13,17 +13,14 @@
 body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}
 .app{width:100%;max-width:430px;background:#f7fbf8;height:100vh;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,0.25);}
 
-/* HEADER */
 .header{padding:20px;background:linear-gradient(135deg,#0d5c2a,#1f8f45);color:white;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
 .back-btn{cursor:pointer;font-size:24px;color:white;}
 .header-text h1{font-size:1.1rem;font-weight:700;}
 
-/* CONTENT */
 .content{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding:18px;}
 
 .form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
 
-/* Tap highlight */
 .tap-highlight{
 transition:0.15s;
 background:#00000022;
@@ -33,7 +30,6 @@ input.tap-highlight,select.tap-highlight{
 outline:none;
 }
 
-/* Floating label */
 .input-container{position:relative;margin-bottom:16px;}
 .input-container input,.input-container select{
 width:100%;
@@ -79,7 +75,6 @@ color:#1f8f45;
 font-size:20px;
 }
 
-/* button */
 .submit-btn{
 width:100%;
 padding:12px;
@@ -97,7 +92,6 @@ background:#a1c8a2;
 cursor:not-allowed;
 }
 
-/* popup */
 #popupKode{
 display:none;
 position:fixed;
@@ -132,6 +126,13 @@ background:#1f8f45;
 color:white;
 font-weight:600;
 cursor:pointer;
+}
+
+.helper-item{
+display:block;
+margin-left:30px;
+margin-bottom:6px;
+font-size:0.9rem;
 }
 </style>
 </head>
@@ -179,7 +180,7 @@ cursor:pointer;
 
 <div class="input-container">
 <span class="material-icons">group</span>
-<input type="text" id="namaHelper" placeholder=" ">
+<div id="helperList"></div>
 <label>Nama Helper</label>
 </div>
 
@@ -225,11 +226,9 @@ function goBack(){
 window.location.href="menu.html";
 }
 
-/* tanggal otomatis */
 const tanggalInput=document.getElementById("tanggal");
 tanggalInput.value=new Date().toISOString().split("T")[0];
 
-/* helper dropdown */
 const jumlahHelper=document.getElementById("jumlahHelper");
 for(let i=1;i<=2;i++){
 let opt=document.createElement("option");
@@ -238,9 +237,9 @@ opt.text=i;
 jumlahHelper.appendChild(opt);
 }
 
-/* operator & lokasi */
 const lokasiSelect=document.getElementById("lokasiKerja");
 const operatorSelect=document.getElementById("namaOperator");
+const helperList=document.getElementById("helperList");
 
 fetch(API_URL)
 .then(res=>res.json())
@@ -264,9 +263,43 @@ operatorSelect.appendChild(opt);
 });
 }
 
+if(data.totalTransaksi){
+data.totalTransaksi.forEach(helper=>{
+let label=document.createElement("label");
+label.className="helper-item";
+
+let cb=document.createElement("input");
+cb.type="checkbox";
+cb.value=helper;
+cb.className="helperCheck";
+
+label.appendChild(cb);
+label.append(" "+helper);
+
+helperList.appendChild(label);
+});
+}
+
+});
+
+/* batasi max 2 helper */
+document.addEventListener("change",function(e){
+
+if(e.target.classList.contains("helperCheck")){
+
+const checked=document.querySelectorAll(".helperCheck:checked");
+
+if(checked.length>2){
+e.target.checked=false;
+alert("Maksimal hanya 2 helper");
+}
+
+}
+
 });
 
 /* popup */
+
 function showPopup(kode){
 let popup=document.getElementById("popupKode");
 let content=document.getElementById("popupContent");
@@ -293,8 +326,6 @@ document.getElementById("popupKode").addEventListener("click",(e)=>{
 if(e.target.id==="popupKode") closePopup();
 });
 
-/* submit */
-
 let submitting=false;
 
 function submitForm(){
@@ -305,13 +336,17 @@ submitting=true;
 
 document.getElementById("submitBtn").disabled=true;
 
+const helperDipilih=[...document.querySelectorAll(".helperCheck:checked")]
+.map(cb=>cb.value)
+.join(", ");
+
 const data={
 
 tanggal:tanggalInput.value,
 namaPetani:document.getElementById("namaPetani").value,
 jumlahKarungan:document.getElementById("jumlahKarungan").value,
 namaOperator:operatorSelect.value,
-namaHelper:document.getElementById("namaHelper").value,
+namaHelper:helperDipilih,
 jumlahHelper:jumlahHelper.value,
 hargaPerKarung:document.getElementById("hargaPerKarung").value,
 lokasiKerja:lokasiSelect.value
@@ -334,9 +369,11 @@ if(resp.status==="success"){
 
 showPopup(resp.kodeTransaksi);
 
-/* reset */
-document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung")
+document.querySelectorAll("#namaPetani,#jumlahKarungan,#hargaPerKarung")
 .forEach(i=>i.value="");
+
+document.querySelectorAll(".helperCheck")
+.forEach(cb=>cb.checked=false);
 
 jumlahHelper.selectedIndex=0;
 lokasiSelect.selectedIndex=0;
