@@ -23,6 +23,7 @@ body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;jus
 
 .form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
 
+/* Tap highlight */
 .tap-highlight{
 transition:0.15s;
 background:#00000022;
@@ -32,8 +33,8 @@ input.tap-highlight,select.tap-highlight{
 outline:none;
 }
 
+/* Floating label */
 .input-container{position:relative;margin-bottom:16px;}
-
 .input-container input,.input-container select{
 width:100%;
 padding:14px 12px 14px 36px;
@@ -41,6 +42,10 @@ border:1px solid #d9e6dd;
 border-radius:12px;
 font-size:0.95rem;
 background:white;
+}
+
+.input-container input:focus,.input-container select:focus{
+border-color:#1f8f45;
 }
 
 .input-container label{
@@ -62,16 +67,17 @@ color:#1f8f45;
 font-size:20px;
 }
 
-/* helper checkbox */
+/* helper list */
 .helper-item{
 display:flex;
 align-items:center;
 gap:6px;
+padding-left:36px;
 margin-bottom:6px;
 font-size:0.9rem;
-padding-left:36px;
 }
 
+/* button */
 .submit-btn{
 width:100%;
 padding:12px;
@@ -172,7 +178,7 @@ cursor:pointer;
 <div class="input-container">
 <span class="material-icons">group</span>
 <div id="namaHelper"></div>
-<label>Nama Helper (maks 2)</label>
+<label>Nama Helper</label>
 </div>
 
 <div class="input-container">
@@ -217,9 +223,11 @@ function goBack(){
 window.location.href="menu.html";
 }
 
+/* tanggal otomatis */
 const tanggalInput=document.getElementById("tanggal");
 tanggalInput.value=new Date().toISOString().split("T")[0];
 
+/* helper dropdown */
 const jumlahHelper=document.getElementById("jumlahHelper");
 for(let i=1;i<=2;i++){
 let opt=document.createElement("option");
@@ -254,9 +262,9 @@ operatorSelect.appendChild(opt);
 });
 }
 
-/* HELPER LIST */
-
+/* helper list dari dashboard */
 if(data.totalTransaksi){
+
 data.totalTransaksi.forEach(name=>{
 
 let div=document.createElement("div");
@@ -286,10 +294,12 @@ div.appendChild(label);
 helperContainer.appendChild(div);
 
 });
+
 }
 
 });
 
+/* popup */
 function showPopup(kode){
 let popup=document.getElementById("popupKode");
 let content=document.getElementById("popupContent");
@@ -307,7 +317,7 @@ let popup=document.getElementById("popupKode");
 let content=document.getElementById("popupContent");
 
 popup.style.opacity="0";
-content.style.transform="scale(0.8)");
+content.style.transform="scale(0.8)";
 
 setTimeout(()=>popup.style.display="none",250);
 }
@@ -316,6 +326,8 @@ document.getElementById("popupKode").addEventListener("click",(e)=>{
 if(e.target.id==="popupKode") closePopup();
 });
 
+/* submit */
+
 let submitting=false;
 
 function submitForm(){
@@ -323,6 +335,7 @@ function submitForm(){
 if(submitting) return;
 
 submitting=true;
+
 document.getElementById("submitBtn").disabled=true;
 
 const helpers=Array.from(document.querySelectorAll("#namaHelper input:checked"))
@@ -358,6 +371,7 @@ if(resp.status==="success"){
 
 showPopup(resp.kodeTransaksi);
 
+/* reset */
 document.querySelectorAll("#namaPetani,#jumlahKarungan,#hargaPerKarung")
 .forEach(i=>i.value="");
 
