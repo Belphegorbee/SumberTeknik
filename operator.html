@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operator - Sumber Teknik</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;user-select:none;-webkit-user-select:none;}
+
+body{
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+}
+
+.app{
+width:100%;
+max-width:430px;
+background:#f7fbf8;
+height:100vh;
+display:flex;
+flex-direction:column;
+box-shadow:0 0 40px rgba(0,0,0,0.25);
+}
+
+/* HEADER */
+
+.header{
+padding:20px;
+background:linear-gradient(135deg,#0d5c2a,#1f8f45);
+color:white;
+display:flex;
+align-items:center;
+gap:12px;
+position:sticky;
+top:0;
+z-index:10;
+}
+
+.back-btn{
+cursor:pointer;
+font-size:24px;
+}
+
+.header-text h1{
+font-size:1.1rem;
+font-weight:700;
+}
+
+/* CONTENT */
+
+.content{
+flex:1;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:16px;
+padding:18px;
+}
+
+.form-card{
+background:white;
+border-radius:18px;
+padding:18px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* INPUT */
+
+.input-container{
+position:relative;
+margin-bottom:16px;
+}
+
+.input-container input,
+.input-container select{
+width:100%;
+padding:14px 12px 14px 36px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+background:white;
+}
+
+.input-container input:focus,
+.input-container select:focus{
+border-color:#1f8f45;
+outline:none;
+}
+
+.input-container label{
+position:absolute;
+left:36px;
+top:14px;
+color:#4b5e55;
+font-size:0.85rem;
+pointer-events:none;
+transition:0.2s;
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label,
+.input-container select:focus + label,
+.input-container select:not([value=""]) + label{
+top:-8px;
+left:12px;
+font-size:0.7rem;
+background:white;
+padding:0 4px;
+color:#1f8f45;
+}
+
+.material-icons{
+position:absolute;
+left:8px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+font-size:20px;
+}
+
+/* BUTTON */
+
+.submit-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+/* GRID HASIL */
+
+#hasil{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+max-height:350px;
+overflow-y:auto;
+padding-right:4px;
+}
+
+/* CARD DATA */
+
+.data-card{
+background:white;
+border-radius:12px;
+padding:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.08);
+font-size:0.8rem;
+}
+
+.data-title{
+font-weight:700;
+color:#1f8f45;
+font-size:0.85rem;
+margin-bottom:4px;
+}
+
+.data-row{
+font-size:0.75rem;
+line-height:1.2;
+}
+
+/* POPUP */
+
+#popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+z-index:1000;
+opacity:0;
+transition:opacity 0.25s;
+}
+
+.popup-content{
+background:white;
+padding:24px 32px;
+border-radius:16px;
+text-align:center;
+box-shadow:0 8px 25px rgba(0,0,0,0.3);
+transform:scale(0.8);
+transition:transform 0.25s;
+}
+
+.popup-content button{
+margin-top:20px;
+padding:10px 20px;
+border:none;
+border-radius:10px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+<span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+<div class="header-text">
+<h1>Data Operator</h1>
+</div>
+</div>
+
+<div class="content">
+
+<div class="form-card">
+
+<div class="input-container">
+<span class="material-icons">event</span>
+<input type="date" id="tanggalMulai" placeholder=" ">
+<label>Tanggal Mulai</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">event</span>
+<input type="date" id="tanggalAkhir" placeholder=" ">
+<label>Tanggal Akhir</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">person</span>
+<select id="namaOperator">
+<option value="">Pilih Operator</option>
+</select>
+<label>Nama Operator</label>
+</div>
+
+<button class="submit-btn" onclick="loadData()">Cari Data</button>
+
+</div>
+
+<div id="hasil"></div>
+
+</div>
+</div>
+
+<div id="popup">
+<div class="popup-content">
+<p>Data ditemukan</p>
+<button onclick="closePopup()">Tutup</button>
+</div>
+</div>
+
+<script>
+
+const API_URL="https://script.google.com/macros/s/AKfycbxfPuJmalnJcxoLCfgvERkKMlPX1j2e5PEPn_zgpxDj9aszo8g9tp1UtCqPei_5AQgv/exec";
+
+function goBack(){
+window.location.href="menu.html";
+}
+
+/* ambil operator */
+
+const operatorSelect=document.getElementById("namaOperator");
+
+fetch(API_URL)
+.then(res=>res.json())
+.then(data=>{
+
+if(data.totalUnitAktif){
+
+data.totalUnitAktif.forEach(op=>{
+
+let opt=document.createElement("option");
+opt.value=op;
+opt.text=op;
+
+operatorSelect.appendChild(opt);
+
+});
+
+}
+
+});
+
+/* popup */
+
+function showPopup(){
+
+let popup=document.getElementById("popup");
+let content=document.querySelector(".popup-content");
+
+popup.style.display="flex";
+void popup.offsetWidth;
+
+popup.style.opacity="1";
+content.style.transform="scale(1)";
+
+}
+
+function closePopup(){
+
+let popup=document.getElementById("popup");
+let content=document.querySelector(".popup-content");
+
+popup.style.opacity="0";
+content.style.transform="scale(0.8)";
+
+setTimeout(()=>{
+popup.style.display="none";
+},250);
+
+}
+
+/* load data */
+
+function loadData(){
+
+const mulai=document.getElementById("tanggalMulai").value;
+const akhir=document.getElementById("tanggalAkhir").value;
+const operator=operatorSelect.value;
+
+if(!mulai || !akhir || !operator){
+
+alert("Lengkapi semua filter.");
+return;
+
+}
+
+fetch(`${API_URL}?action=getOperatorData&tanggalMulai=${mulai}&tanggalAkhir=${akhir}&namaOperator=${operator}`)
+
+.then(res=>res.json())
+
+.then(response=>{
+
+const data=response.data || [];
+const hasil=document.getElementById("hasil");
+
+hasil.innerHTML="";
+
+if(data.length===0){
+
+hasil.innerHTML="<p>Tidak ada data.</p>";
+return;
+
+}
+
+showPopup();
+
+data.forEach(row=>{
+
+let card=document.createElement("div");
+card.className="data-card";
+
+card.innerHTML=`
+
+<div class="data-title">${row.tanggal}</div>
+
+<div class="data-row">Karung : ${row.jumlahKarungan}</div>
+<div class="data-row">Harga : ${row.hargaPerKarung}</div>
+<div class="data-row">Total : ${row.totalPendapatan}</div>
+<div class="data-row">Pinj : ${row.pinjaman}</div>
+
+`;
+
+hasil.appendChild(card);
+
+});
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
