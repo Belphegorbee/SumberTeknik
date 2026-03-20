@@ -18,14 +18,14 @@ body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;jus
 .header-text h1{font-size:1.1rem;font-weight:700;}
 
 .content{
-flex:1;
-overflow-y:auto;
-display:flex;
-flex-direction:column;
-gap:16px;
-padding:18px;
-padding-top:70px;
-padding-bottom:120px;
+  flex:1;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  padding:18px;
+  padding-top:20px;
+  padding-bottom:120px;
 }
 
 .form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
@@ -78,11 +78,11 @@ pointer-events:none;
 font-size:20px;
 }
 
+/* Password */
 .password-wrapper{
   position:relative;
   margin-bottom:16px;
 }
-
 .password-wrapper input{
   width:100%;
   padding:14px 44px 14px 36px;
@@ -91,7 +91,6 @@ font-size:20px;
   font-size:0.95rem;
   background:white;
 }
-
 .password-wrapper label{
   position:absolute;
   left:36px;
@@ -103,7 +102,6 @@ font-size:20px;
   background:white;
   padding:0 4px;
 }
-
 .password-wrapper input:focus + label,
 .password-wrapper input:not(:placeholder-shown) + label{
   top:-8px;
@@ -111,7 +109,6 @@ font-size:20px;
   font-size:0.7rem;
   color:#1f8f45;
 }
-
 .password-wrapper .left-icon,
 .password-wrapper .right-icon{
 position:absolute;
@@ -123,6 +120,7 @@ color:#1f8f45;
 .password-wrapper .left-icon{left:10px;}
 .password-wrapper .right-icon{right:10px;cursor:pointer;z-index:2;}
 
+/* Helper */
 .helper-box{
 position:absolute;
 top:100%;
@@ -139,11 +137,9 @@ margin-top:6px;
 box-shadow:0 8px 20px rgba(0,0,0,0.08);
 padding:6px;
 }
-
 .helper-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;}
 .helper-item:hover{background:#eef6f1;}
 .helper-item input{width:18px;height:18px;accent-color:#1f8f45;}
-
 .helper-warning{font-size:0.75rem;color:#c0392b;margin-top:4px;display:none;}
 
 .submit-btn{
@@ -157,6 +153,24 @@ font-weight:600;
 cursor:pointer;
 }
 .submit-btn:disabled{background:#a1c8a2;}
+
+/* Toast */
+#toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1f8f45;
+  color:white;
+  padding:12px 24px;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s, transform 0.3s;
+  z-index:9999;
+  font-weight:600;
+}
 </style>
 </head>
 
@@ -249,6 +263,8 @@ cursor:pointer;
 </div>
 </div>
 
+<div id="toast"></div>
+
 <script>
 const API_URL="https://script.google.com/macros/s/AKfycbxfPuJmalnJcxoLCfgvERkKMlPX1j2e5PEPn_zgpxDj9aszo8g9tp1UtCqPei_5AQgv/exec";
 
@@ -256,13 +272,14 @@ let pinjamanList=[];
 
 const sandiInput=document.getElementById("sandiOperator");
 const toggleSandi=document.getElementById("toggleSandi");
+
 toggleSandi.addEventListener("click",()=>{
 if(sandiInput.type==="password"){
-  sandiInput.type="text";
-  toggleSandi.innerText="visibility_off";
+sandiInput.type="text";
+toggleSandi.innerText="visibility_off";
 }else{
-  sandiInput.type="password";
-  toggleSandi.innerText="visibility";
+sandiInput.type="password";
+toggleSandi.innerText="visibility";
 }
 });
 
@@ -273,10 +290,10 @@ tanggalInput.value=new Date().toISOString().split("T")[0];
 
 const jumlahHelper=document.getElementById("jumlahHelper");
 for(let i=1;i<=2;i++){
-  let opt=document.createElement("option");
-  opt.value=i;
-  opt.text=i;
-  jumlahHelper.appendChild(opt);
+let opt=document.createElement("option");
+opt.value=i;
+opt.text=i;
+jumlahHelper.appendChild(opt);
 }
 
 const lokasiSelect=document.getElementById("lokasiKerja");
@@ -287,127 +304,148 @@ const helperBox=document.getElementById("helperBox");
 const helperInput=document.getElementById("namaHelper");
 const helperWarning=document.getElementById("helperWarning");
 
-// ambil data dari API
+// ambil data
 fetch(API_URL)
 .then(res=>res.json())
 .then(data=>{
+// lokasi
+data.lokasiKerjaAktif.forEach(loc=>{
+let opt=document.createElement("option");
+opt.value=loc;
+opt.text=loc;
+lokasiSelect.appendChild(opt);
+});
 
-  // lokasi kerja
-  data.lokasiKerjaAktif.forEach(loc=>{
-    let opt=document.createElement("option");
-    opt.value=loc;
-    opt.text=loc;
-    lokasiSelect.appendChild(opt);
-  });
+// operator
+data.totalUnitAktif.forEach((op,i)=>{
+let opt=document.createElement("option");
+opt.value=op;
+opt.text=op;
+operatorSelect.appendChild(opt);
+pinjamanList[i]=data.totalPinjaman[i];
+});
 
-  // operator
-  data.totalUnitAktif.forEach((op,i)=>{
-    let opt=document.createElement("option");
-    opt.value=op;
-    opt.text=op;
-    operatorSelect.appendChild(opt);
-    pinjamanList[i]=data.totalPinjaman[i];
-  });
+// pengurus ambil dari pendapatanBersih
+if(data.pendapatanBersih){
+data.pendapatanBersih.forEach(p=>{
+let opt=document.createElement("option");
+opt.value=p;
+opt.text=p;
+pengurusSelect.appendChild(opt);
+});
+}
 
-  // helper
-  data.totalTransaksi.forEach(nama=>{
-    let div=document.createElement("div");
-    div.className="helper-item";
+// helper
+data.totalTransaksi.forEach(nama=>{
+let div=document.createElement("div");
+div.className="helper-item";
 
-    let cb=document.createElement("input");
-    cb.type="checkbox";
-    cb.value=nama;
+let cb=document.createElement("input");
+cb.type="checkbox";
+cb.value=nama;
 
-    let label=document.createElement("span");
-    label.textContent=nama;
+let label=document.createElement("span");
+label.textContent=nama;
 
-    cb.addEventListener("change",()=>{
-      let checked=helperBox.querySelectorAll("input:checked");
-      if(checked.length>2){
-        cb.checked=false;
-        helperWarning.style.display="block";
-        setTimeout(()=>helperWarning.style.display="none",2000);
-        return;
-      }
-      helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
-      jumlahHelper.value=checked.length;
-      if(checked.length===2){helperBox.style.display="none";}
-    });
+cb.addEventListener("change",()=>{
+let checked=helperBox.querySelectorAll("input:checked");
 
-    div.addEventListener("click",(e)=>{
-      if(e.target.tagName!=="INPUT"){
-        cb.checked=!cb.checked;
-        cb.dispatchEvent(new Event("change"));
-      }
-    });
+if(checked.length>2){
+cb.checked=false;
+helperWarning.style.display="block";
+setTimeout(()=>helperWarning.style.display="none",2000);
+return;
+}
 
-    div.appendChild(cb);
-    div.appendChild(label);
-    helperBox.appendChild(div);
-  });
+helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
+jumlahHelper.value=checked.length;
 
-  // === ambil pengurus dari dashboard (pendapatanBersih) ===
-  const pengurusArray = data.pendapatanBersih || [];
-  pengurusSelect.innerHTML='<option value="">Pilih Pengurus</option>';
-  pengurusArray.forEach(p=>{
-    let opt=document.createElement("option");
-    opt.value=p;
-    opt.text=p;
-    pengurusSelect.appendChild(opt);
-  });
+if(checked.length===2){
+helperBox.style.display="none";
+}
+});
 
+div.addEventListener("click",(e)=>{
+if(e.target.tagName!=="INPUT"){
+cb.checked=!cb.checked;
+cb.dispatchEvent(new Event("change"));
+}
+});
+
+div.appendChild(cb);
+div.appendChild(label);
+helperBox.appendChild(div);
+});
 });
 
 helperInput.addEventListener("click",()=>{
-  helperBox.style.display=helperBox.style.display==="block"?"none":"block";
+helperBox.style.display=
+helperBox.style.display==="block"?"none":"block";
 });
 
+const toast = document.getElementById("toast");
+
+function showToast(message, success=true){
+  toast.innerText = message;
+  toast.style.background = success ? "#1f8f45" : "#e74c3c";
+  toast.style.opacity = "1";
+  toast.style.transform = "translateX(-50%) translateY(0)";
+  setTimeout(()=>{
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(-50%) translateY(20px)";
+  },2000);
+}
+
 let submitting=false;
+
 function submitForm(){
-  if(submitting) return;
 
-  const operatorIndex=operatorSelect.selectedIndex-1;
-  const sandi=sandiInput.value;
+if(submitting) return;
 
-  if(operatorIndex<0){alert("Pilih operator dulu");return;}
-  if(pinjamanList[operatorIndex]!=sandi){alert("Sandi salah");return;}
+const operatorIndex=operatorSelect.selectedIndex-1;
+const sandi=sandiInput.value;
 
-  submitting=true;
-  document.getElementById("submitBtn").disabled=true;
+if(operatorIndex<0){ showToast("Pilih operator dulu", false); return; }
+if(pinjamanList[operatorIndex]!=sandi){ showToast("Sandi salah", false); return; }
 
-  const data={
-    tanggal:tanggalInput.value,
-    namaPetani:document.getElementById("namaPetani").value,
-    jumlahKarungan:document.getElementById("jumlahKarungan").value,
-    namaOperator:operatorSelect.value,
-    namaHelper:helperInput.value,
-    jumlahHelper:jumlahHelper.value,
-    hargaPerKarung:document.getElementById("hargaPerKarung").value,
-    lokasiKerja:lokasiSelect.value,
-    pengurus:pengurusSelect.value
-  };
+submitting=true;
+document.getElementById("submitBtn").disabled=true;
 
-  fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify(data)
-  })
-  .then(res=>res.json())
-  .then(resp=>{
-    submitting=false;
-    document.getElementById("submitBtn").disabled=false;
+const data={
+tanggal:tanggalInput.value,
+namaPetani:document.getElementById("namaPetani").value,
+jumlahKarungan:document.getElementById("jumlahKarungan").value,
+namaOperator:operatorSelect.value,
+namaHelper:helperInput.value,
+jumlahHelper:jumlahHelper.value,
+hargaPerKarung:document.getElementById("hargaPerKarung").value,
+lokasiKerja:lokasiSelect.value,
+pengurus:pengurusSelect.value
+};
 
-    if(resp.status==="success"){
-      alert("Berhasil");
-      document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung,#sandiOperator")
-      .forEach(i=>i.value="");
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify(data)
+})
+.then(res=>res.json())
+.then(resp=>{
+submitting=false;
+document.getElementById("submitBtn").disabled=false;
 
-      pengurusSelect.selectedIndex=0;
-      helperBox.querySelectorAll("input").forEach(cb=>cb.checked=false);
-      jumlahHelper.selectedIndex=0;
-      lokasiSelect.selectedIndex=0;
-      operatorSelect.selectedIndex=0;
-    }
-  });
+if(resp.status==="success"){
+showToast("Laporan berhasil dikirim", true);
+
+document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung,#sandiOperator")
+.forEach(i=>i.value="");
+
+pengurusSelect.selectedIndex=0;
+helperBox.querySelectorAll("input").forEach(cb=>cb.checked=false);
+jumlahHelper.selectedIndex=0;
+lokasiSelect.selectedIndex=0;
+operatorSelect.selectedIndex=0;
+}
+});
+
 }
 </script>
 
