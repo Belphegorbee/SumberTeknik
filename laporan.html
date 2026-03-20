@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Laporan Pekerjaan - Sumber Teknik</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -256,14 +256,13 @@ let pinjamanList=[];
 
 const sandiInput=document.getElementById("sandiOperator");
 const toggleSandi=document.getElementById("toggleSandi");
-
 toggleSandi.addEventListener("click",()=>{
 if(sandiInput.type==="password"){
-sandiInput.type="text";
-toggleSandi.innerText="visibility_off";
+  sandiInput.type="text";
+  toggleSandi.innerText="visibility_off";
 }else{
-sandiInput.type="password";
-toggleSandi.innerText="visibility";
+  sandiInput.type="password";
+  toggleSandi.innerText="visibility";
 }
 });
 
@@ -274,10 +273,10 @@ tanggalInput.value=new Date().toISOString().split("T")[0];
 
 const jumlahHelper=document.getElementById("jumlahHelper");
 for(let i=1;i<=2;i++){
-let opt=document.createElement("option");
-opt.value=i;
-opt.text=i;
-jumlahHelper.appendChild(opt);
+  let opt=document.createElement("option");
+  opt.value=i;
+  opt.text=i;
+  jumlahHelper.appendChild(opt);
 }
 
 const lokasiSelect=document.getElementById("lokasiKerja");
@@ -288,138 +287,127 @@ const helperBox=document.getElementById("helperBox");
 const helperInput=document.getElementById("namaHelper");
 const helperWarning=document.getElementById("helperWarning");
 
-// Ambil pengurus dari dashboard localStorage
-const dashboardData = JSON.parse(localStorage.getItem("dashboardData") || "[]");
-const pengurusObj = dashboardData.find(d => d.title === "Pengurus");
-const pengurusArray = pengurusObj?.value || [];
-pengurusSelect.innerHTML = '<option value="">Pilih Pengurus</option>';
-pengurusArray.forEach(p=>{
-    let opt=document.createElement("option");
-    opt.value=p;
-    opt.text=p;
-    pengurusSelect.appendChild(opt);
-});
-
-// Ambil data dari API
+// ambil data dari API
 fetch(API_URL)
 .then(res=>res.json())
 .then(data=>{
 
-data.lokasiKerjaAktif.forEach(loc=>{
-let opt=document.createElement("option");
-opt.value=loc;
-opt.text=loc;
-lokasiSelect.appendChild(opt);
-});
+  // lokasi kerja
+  data.lokasiKerjaAktif.forEach(loc=>{
+    let opt=document.createElement("option");
+    opt.value=loc;
+    opt.text=loc;
+    lokasiSelect.appendChild(opt);
+  });
 
-data.totalUnitAktif.forEach((op,i)=>{
-let opt=document.createElement("option");
-opt.value=op;
-opt.text=op;
-operatorSelect.appendChild(opt);
-pinjamanList[i]=data.totalPinjaman[i];
-});
+  // operator
+  data.totalUnitAktif.forEach((op,i)=>{
+    let opt=document.createElement("option");
+    opt.value=op;
+    opt.text=op;
+    operatorSelect.appendChild(opt);
+    pinjamanList[i]=data.totalPinjaman[i];
+  });
 
-data.totalTransaksi.forEach(nama=>{
-let div=document.createElement("div");
-div.className="helper-item";
+  // helper
+  data.totalTransaksi.forEach(nama=>{
+    let div=document.createElement("div");
+    div.className="helper-item";
 
-let cb=document.createElement("input");
-cb.type="checkbox";
-cb.value=nama;
+    let cb=document.createElement("input");
+    cb.type="checkbox";
+    cb.value=nama;
 
-let label=document.createElement("span");
-label.textContent=nama;
+    let label=document.createElement("span");
+    label.textContent=nama;
 
-cb.addEventListener("change",()=>{
-let checked=helperBox.querySelectorAll("input:checked");
+    cb.addEventListener("change",()=>{
+      let checked=helperBox.querySelectorAll("input:checked");
+      if(checked.length>2){
+        cb.checked=false;
+        helperWarning.style.display="block";
+        setTimeout(()=>helperWarning.style.display="none",2000);
+        return;
+      }
+      helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
+      jumlahHelper.value=checked.length;
+      if(checked.length===2){helperBox.style.display="none";}
+    });
 
-if(checked.length>2){
-cb.checked=false;
-helperWarning.style.display="block";
-setTimeout(()=>helperWarning.style.display="none",2000);
-return;
-}
+    div.addEventListener("click",(e)=>{
+      if(e.target.tagName!=="INPUT"){
+        cb.checked=!cb.checked;
+        cb.dispatchEvent(new Event("change"));
+      }
+    });
 
-helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
-jumlahHelper.value=checked.length;
+    div.appendChild(cb);
+    div.appendChild(label);
+    helperBox.appendChild(div);
+  });
 
-if(checked.length===2){
-helperBox.style.display="none";
-}
-});
-
-div.addEventListener("click",(e)=>{
-if(e.target.tagName!=="INPUT"){
-cb.checked=!cb.checked;
-cb.dispatchEvent(new Event("change"));
-}
-});
-
-div.appendChild(cb);
-div.appendChild(label);
-helperBox.appendChild(div);
-});
+  // === ambil pengurus dari dashboard (pendapatanBersih) ===
+  const pengurusArray = data.pendapatanBersih || [];
+  pengurusSelect.innerHTML='<option value="">Pilih Pengurus</option>';
+  pengurusArray.forEach(p=>{
+    let opt=document.createElement("option");
+    opt.value=p;
+    opt.text=p;
+    pengurusSelect.appendChild(opt);
+  });
 
 });
 
 helperInput.addEventListener("click",()=>{
-helperBox.style.display=
-helperBox.style.display==="block"?"none":"block";
+  helperBox.style.display=helperBox.style.display==="block"?"none":"block";
 });
 
 let submitting=false;
-
 function submitForm(){
+  if(submitting) return;
 
-if(submitting) return;
+  const operatorIndex=operatorSelect.selectedIndex-1;
+  const sandi=sandiInput.value;
 
-const operatorIndex=operatorSelect.selectedIndex-1;
-const sandi=sandiInput.value;
+  if(operatorIndex<0){alert("Pilih operator dulu");return;}
+  if(pinjamanList[operatorIndex]!=sandi){alert("Sandi salah");return;}
 
-if(operatorIndex<0){alert("Pilih operator dulu");return;}
-if(pinjamanList[operatorIndex]!=sandi){alert("Sandi salah");return;}
+  submitting=true;
+  document.getElementById("submitBtn").disabled=true;
 
-submitting=true;
-document.getElementById("submitBtn").disabled=true;
+  const data={
+    tanggal:tanggalInput.value,
+    namaPetani:document.getElementById("namaPetani").value,
+    jumlahKarungan:document.getElementById("jumlahKarungan").value,
+    namaOperator:operatorSelect.value,
+    namaHelper:helperInput.value,
+    jumlahHelper:jumlahHelper.value,
+    hargaPerKarung:document.getElementById("hargaPerKarung").value,
+    lokasiKerja:lokasiSelect.value,
+    pengurus:pengurusSelect.value
+  };
 
-const data={
-tanggal:tanggalInput.value,
-namaPetani:document.getElementById("namaPetani").value,
-jumlahKarungan:document.getElementById("jumlahKarungan").value,
-namaOperator:operatorSelect.value,
-namaHelper:helperInput.value,
-jumlahHelper:jumlahHelper.value,
-hargaPerKarung:document.getElementById("hargaPerKarung").value,
-lokasiKerja:lokasiSelect.value,
-pengurus:pengurusSelect.value
-};
+  fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify(data)
+  })
+  .then(res=>res.json())
+  .then(resp=>{
+    submitting=false;
+    document.getElementById("submitBtn").disabled=false;
 
-fetch(API_URL,{
-method:"POST",
-body:JSON.stringify(data)
-})
-.then(res=>res.json())
-.then(resp=>{
-submitting=false;
-document.getElementById("submitBtn").disabled=false;
+    if(resp.status==="success"){
+      alert("Berhasil");
+      document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung,#sandiOperator")
+      .forEach(i=>i.value="");
 
-if(resp.status==="success"){
-alert("Berhasil");
-
-document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung,#sandiOperator")
-.forEach(i=>i.value="");
-
-pengurusSelect.selectedIndex=0;
-
-helperBox.querySelectorAll("input").forEach(cb=>cb.checked=false);
-
-jumlahHelper.selectedIndex=0;
-lokasiSelect.selectedIndex=0;
-operatorSelect.selectedIndex=0;
-}
-});
-
+      pengurusSelect.selectedIndex=0;
+      helperBox.querySelectorAll("input").forEach(cb=>cb.checked=false);
+      jumlahHelper.selectedIndex=0;
+      lokasiSelect.selectedIndex=0;
+      operatorSelect.selectedIndex=0;
+    }
+  });
 }
 </script>
 
