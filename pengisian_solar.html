@@ -9,7 +9,14 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;user-select:none;-webkit-user-select:none;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+user-select:none;
+-webkit-user-select:none;
+}
 
 body{
 background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
@@ -30,6 +37,7 @@ flex-direction:column;
 box-shadow:0 0 40px rgba(0,0,0,0.25);
 }
 
+/* HEADER */
 .header{
 padding:20px;
 background:linear-gradient(135deg,#0d5c2a,#1f8f45);
@@ -52,6 +60,7 @@ font-size:1.1rem;
 font-weight:700;
 }
 
+/* CONTENT */
 .content{
 flex:1;
 overflow-y:auto;
@@ -68,6 +77,7 @@ padding:18px;
 box-shadow:0 8px 25px rgba(0,0,0,0.08);
 }
 
+/* INPUT NORMAL */
 .input-container{
 position:relative;
 margin-bottom:16px;
@@ -76,7 +86,7 @@ margin-bottom:16px;
 .input-container input,
 .input-container select{
 width:100%;
-padding:14px 12px 14px 36px;
+padding:14px 12px 14px 44px;
 border:1px solid #d9e6dd;
 border-radius:12px;
 font-size:0.95rem;
@@ -91,7 +101,7 @@ outline:none;
 
 .input-container label{
 position:absolute;
-left:36px;
+left:44px;
 top:14px;
 color:#4b5e55;
 font-size:0.85rem;
@@ -111,15 +121,71 @@ padding:0 4px;
 color:#1f8f45;
 }
 
-.material-icons{
+/* ICON KHUSUS INPUT */
+.input-container .material-icons{
 position:absolute;
-left:8px;
+left:12px;
 top:50%;
 transform:translateY(-50%);
 color:#1f8f45;
 font-size:20px;
+pointer-events:none;
 }
 
+/* PASSWORD */
+.password-wrapper{
+position:relative;
+margin-bottom:16px;
+}
+
+.password-wrapper input{
+width:100%;
+padding:14px 44px 14px 44px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+}
+
+.password-wrapper label{
+position:absolute;
+left:44px;
+top:14px;
+color:#4b5e55;
+font-size:0.85rem;
+transition:0.2s;
+background:white;
+padding:0 4px;
+pointer-events:none;
+}
+
+.password-wrapper input:focus + label,
+.password-wrapper input:not(:placeholder-shown) + label{
+top:-8px;
+left:12px;
+font-size:0.7rem;
+color:#1f8f45;
+}
+
+/* ICON PASSWORD */
+.password-wrapper .left-icon{
+position:absolute;
+left:12px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+pointer-events:none;
+}
+
+.password-wrapper .right-icon{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+color:#1f8f45;
+}
+
+/* BUTTON */
 .submit-btn{
 width:100%;
 padding:12px;
@@ -137,6 +203,7 @@ background:#a1c8a2;
 cursor:not-allowed;
 }
 
+/* PREVIEW */
 .preview-box{
 background:#eef6f0;
 border-radius:12px;
@@ -148,6 +215,7 @@ font-weight:600;
 display:none;
 }
 
+/* POPUP */
 #popup{
 display:none;
 position:fixed;
@@ -198,7 +266,6 @@ cursor:pointer;
 </div>
 
 <div class="content">
-
 <div class="form-card">
 
 <div class="input-container">
@@ -213,6 +280,13 @@ cursor:pointer;
 <option value="">Pilih Operator</option>
 </select>
 <label>Nama Operator</label>
+</div>
+
+<div class="password-wrapper">
+<input type="password" id="sandiOperator" placeholder=" ">
+<label>Sandi Operator</label>
+<span class="material-icons left-icon">lock</span>
+<span class="material-icons right-icon" id="toggleSandi">visibility</span>
 </div>
 
 <div class="input-container">
@@ -239,18 +313,17 @@ Total Biaya Solar : <span id="totalSolar">0</span>
 
 <div id="popup">
 <div class="popup-content">
-<p>Data solar berhasil disimpan</p>
+<p id="popupMsg"></p>
 <button onclick="closePopup()">Tutup</button>
 </div>
 </div>
 
 <script>
-
 const API_URL="https://script.google.com/macros/s/AKfycbxfPuJmalnJcxoLCfgvERkKMlPX1j2e5PEPn_zgpxDj9aszo8g9tp1UtCqPei_5AQgv/exec";
 
-function goBack(){
-window.location.href="menu.html";
-}
+let pinjamanList=[];
+
+function goBack(){window.location.href="menu.html";}
 
 const tanggalInput=document.getElementById("tanggal");
 tanggalInput.value=new Date().toISOString().split("T")[0];
@@ -261,14 +334,23 @@ fetch(API_URL)
 .then(res=>res.json())
 .then(data=>{
 if(data.totalUnitAktif){
-data.totalUnitAktif.forEach(op=>{
+data.totalUnitAktif.forEach((op,i)=>{
 let opt=document.createElement("option");
 opt.value=op;
 opt.text=op;
 operatorSelect.appendChild(opt);
+pinjamanList[i]=data.totalPinjaman[i];
 });
 }
 });
+
+const sandiInput=document.getElementById("sandiOperator");
+const toggleSandi=document.getElementById("toggleSandi");
+
+toggleSandi.onclick=()=>{
+sandiInput.type = sandiInput.type==="password"?"text":"password";
+toggleSandi.innerText = sandiInput.type==="text"?"visibility_off":"visibility";
+};
 
 const literInput=document.getElementById("literan");
 const hargaInput=document.getElementById("harga");
@@ -280,52 +362,32 @@ return Number(num).toLocaleString("id-ID");
 }
 
 function hitungTotal(){
-
 let liter=literInput.value;
 let harga=hargaInput.value;
 
 if(liter && harga){
-
 let total=liter*harga;
-
 totalSolar.innerText=formatRupiah(total);
 previewBox.style.display="block";
-
 }else{
-
 previewBox.style.display="none";
-
 }
-
 }
 
 literInput.addEventListener("input",hitungTotal);
 hargaInput.addEventListener("input",hitungTotal);
 
-function showPopup(){
-
+function showPopup(msg){
 let popup=document.getElementById("popup");
-let content=document.querySelector(".popup-content");
-
+document.getElementById("popupMsg").innerText=msg;
 popup.style.display="flex";
-void popup.offsetWidth;
-
-popup.style.opacity="1";
-content.style.transform="scale(1)";
+setTimeout(()=>popup.style.opacity="1",10);
 }
 
 function closePopup(){
-
 let popup=document.getElementById("popup");
-let content=document.querySelector(".popup-content");
-
 popup.style.opacity="0";
-content.style.transform="scale(0.8)";
-
-setTimeout(()=>{
-popup.style.display="none";
-},250);
-
+setTimeout(()=>popup.style.display="none",200);
 }
 
 let submitting=false;
@@ -334,10 +396,11 @@ function submitForm(){
 
 if(submitting) return;
 
-if(!operatorSelect.value || !literInput.value || !hargaInput.value){
-alert("Lengkapi semua data terlebih dahulu.");
-return;
-}
+const idx=operatorSelect.selectedIndex-1;
+
+if(idx<0){showPopup("Pilih operator dulu");return;}
+if(pinjamanList[idx]!=sandiInput.value){showPopup("Sandi salah");return;}
+if(!literInput.value || !hargaInput.value){showPopup("Lengkapi data");return;}
 
 submitting=true;
 document.getElementById("submitBtn").disabled=true;
@@ -354,38 +417,25 @@ fetch(API_URL,{
 method:"POST",
 body:JSON.stringify(data)
 })
-
 .then(res=>res.json())
-
 .then(resp=>{
-
 submitting=false;
 document.getElementById("submitBtn").disabled=false;
 
 if(resp.status==="success"){
-
-showPopup();
-
+showPopup("Data berhasil disimpan");
 literInput.value="";
 hargaInput.value="";
 operatorSelect.selectedIndex=0;
 previewBox.style.display="none";
-
 }
-
 })
-
 .catch(()=>{
-
 submitting=false;
 document.getElementById("submitBtn").disabled=false;
-
 alert("Terjadi kesalahan.");
-
 });
-
 }
-
 </script>
 
 </body>
