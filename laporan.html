@@ -11,11 +11,11 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;user-select:none;-webkit-user-select:none;}
 body{
+body{
 background:
-linear-gradient(rgba(15,32,39,0.9), rgba(44,83,100,0.9)),
-url('background.png') no-repeat center center;
-background-size: contain;
-background-attachment: fixed;
+linear-gradient(rgba(15,32,39,0.75), rgba(44,83,100,0.75)),
+url('background.jpg') no-repeat center center;
+background-size: cover;
 
 display:flex;
 justify-content:center;
@@ -40,7 +40,14 @@ overflow:hidden;
   padding-bottom:120px;
 }
 
-.form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
+.form-card{
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(6px);
+-webkit-backdrop-filter:blur(6px);
+border-radius:18px;
+padding:18px;
+box-shadow:0 8px 25px rgba(0,0,0,0.15);
+}
 
 .tap-highlight{transition:0.15s;background:#00000022;}
 input.tap-highlight,select.tap-highlight{-webkit-tap-highlight-color:transparent;outline:none;}
