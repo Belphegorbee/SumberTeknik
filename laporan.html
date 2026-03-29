@@ -10,46 +10,179 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;user-select:none;-webkit-user-select:none;}
-body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}
+body{
+background:
+linear-gradient(rgba(15,32,39,0.9), rgba(44,83,100,0.9)),
+url('background.jpg') no-repeat center center;
+background-size: contain;
+background-attachment: fixed;
+
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+}
 .app{width:100%;max-width:430px;background:#f7fbf8;height:100vh;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,0.25);}
 
 .header{padding:20px;background:linear-gradient(135deg,#0d5c2a,#1f8f45);color:white;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:10;}
 .back-btn{cursor:pointer;font-size:24px;color:white;}
 .header-text h1{font-size:1.1rem;font-weight:700;}
 
-.content{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding:18px;padding-bottom:120px;}
+.content{
+  flex:1;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  padding:18px;
+  padding-top:20px;
+  padding-bottom:120px;
+}
+
 .form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
+
+.tap-highlight{transition:0.15s;background:#00000022;}
+input.tap-highlight,select.tap-highlight{-webkit-tap-highlight-color:transparent;outline:none;}
 
 .input-container{position:relative;margin-bottom:16px;}
 .input-container input,.input-container select{
-width:100%;padding:14px 36px;border:1px solid #d9e6dd;border-radius:12px;font-size:0.95rem;background:white;
+width:100%;
+padding:14px 36px 14px 36px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+background:white;
 }
 
+.input-container input:focus,.input-container select:focus{border-color:#1f8f45;}
+
 .input-container label{
-position:absolute;left:36px;top:14px;color:#4b5e55;font-size:0.85rem;
-pointer-events:none;transition:0.2s;background:white;padding:0 4px;
+position:absolute;
+left:36px;
+top:14px;
+color:#4b5e55;
+font-size:0.85rem;
+pointer-events:none;
+transition:0.2s;
+background:white;
+padding:0 4px;
 }
 
 .input-container input:focus + label,
 .input-container input:not(:placeholder-shown) + label,
+.input-container input:valid + label,
 .input-container select:focus + label,
 .input-container select:not([value=""]) + label{
-top:-8px;left:12px;font-size:0.7rem;color:#1f8f45;
+top:-8px;
+left:12px;
+font-size:0.7rem;
+color:#1f8f45;
 }
 
-.material-icons{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#1f8f45;}
+.input-container .material-icons{
+position:absolute;
+left:8px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+pointer-events:none;
+font-size:20px;
+}
 
-.password-wrapper{position:relative;margin-bottom:16px;}
-.password-wrapper input{width:100%;padding:14px 44px 14px 36px;border:1px solid #d9e6dd;border-radius:12px;}
-.password-wrapper .right-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;}
+/* Password */
+.password-wrapper{
+  position:relative;
+  margin-bottom:16px;
+}
+.password-wrapper input{
+  width:100%;
+  padding:14px 44px 14px 36px;
+  border:1px solid #d9e6dd;
+  border-radius:12px;
+  font-size:0.95rem;
+  background:white;
+}
+.password-wrapper label{
+  position:absolute;
+  left:36px;
+  top:14px;
+  font-size:0.85rem;
+  color:#4b5e55;
+  pointer-events:none;
+  transition:0.2s;
+  background:white;
+  padding:0 4px;
+}
+.password-wrapper input:focus + label,
+.password-wrapper input:not(:placeholder-shown) + label{
+  top:-8px;
+  left:12px;
+  font-size:0.7rem;
+  color:#1f8f45;
+}
+.password-wrapper .left-icon,
+.password-wrapper .right-icon{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+font-size:20px;
+color:#1f8f45;
+}
+.password-wrapper .left-icon{left:10px;}
+.password-wrapper .right-icon{right:10px;cursor:pointer;z-index:2;}
 
-.helper-box{position:absolute;background:white;border:1px solid #ccc;border-radius:10px;display:none;max-height:150px;overflow:auto;z-index:10;}
-.helper-item{padding:10px;display:flex;gap:10px;cursor:pointer;}
+/* Helper */
+.helper-box{
+position:absolute;
+top:100%;
+left:0;
+right:0;
+background:#ffffff;
+border:1px solid #d9e6dd;
+border-radius:12px;
+max-height:180px;
+overflow-y:auto;
+display:none;
+z-index:30;
+margin-top:6px;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+padding:6px;
+}
+.helper-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;}
+.helper-item:hover{background:#eef6f1;}
+.helper-item input{width:18px;height:18px;accent-color:#1f8f45;}
+.helper-warning{font-size:0.75rem;color:#c0392b;margin-top:4px;display:none;}
 
-.submit-btn{width:100%;padding:12px;border:none;border-radius:12px;background:#1f8f45;color:white;}
+.submit-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
 .submit-btn:disabled{background:#a1c8a2;}
 
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f8f45;color:white;padding:10px;border-radius:10px;opacity:0;}
+/* Toast */
+#toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1f8f45;
+  color:white;
+  padding:12px 24px;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s, transform 0.3s;
+  z-index:9999;
+  font-weight:600;
+}
 </style>
 </head>
 
@@ -59,38 +192,84 @@ top:-8px;left:12px;font-size:0.7rem;color:#1f8f45;
 
 <div class="header">
 <span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+<div class="header-text">
 <h1>Laporan Pekerjaan</h1>
+</div>
 </div>
 
 <div class="content">
 <div class="form-card">
 
-<input type="date" id="tanggal" readonly>
+<div class="input-container">
+<span class="material-icons">calendar_today</span>
+<input type="date" id="tanggal" class="tap-highlight" placeholder=" " readonly required>
+<label>Tanggal</label>
+</div>
 
-<input type="text" id="namaPetani" placeholder="Nama Petani">
-<input type="number" id="jumlahKarungan" placeholder="Jumlah Karungan">
+<div class="input-container">
+<span class="material-icons">person</span>
+<input type="text" id="namaPetani" placeholder=" " required>
+<label>Nama Petani</label>
+</div>
 
-<select id="namaOperator">
+<div class="input-container">
+<span class="material-icons">inventory_2</span>
+<input type="number" id="jumlahKarungan" placeholder=" " required>
+<label>Jumlah Karungan</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">construction</span>
+<select id="namaOperator" class="tap-highlight" required>
 <option value="">Pilih Operator</option>
 </select>
+<label>Nama Operator</label>
+</div>
 
-<input type="password" id="sandiOperator" placeholder="Sandi Operator">
+<div class="password-wrapper">
+<input type="password" id="sandiOperator" placeholder=" " required>
+<label>Sandi Operator</label>
+<span class="material-icons left-icon">lock</span>
+<span class="material-icons right-icon" id="toggleSandi">visibility</span>
+</div>
 
-<input type="text" id="namaHelper" placeholder="Helper" readonly>
+<div class="input-container">
+<span class="material-icons">group</span>
+<input type="text" id="namaHelper" placeholder=" " readonly>
+<label>Nama Helper</label>
 <div id="helperBox" class="helper-box"></div>
+<div id="helperWarning" class="helper-warning">Maksimal 2 helper</div>
+</div>
 
-<select id="jumlahHelper">
-<option value="">Jumlah Helper</option>
-<option value="1">1</option>
-<option value="2">2</option>
+<div class="input-container">
+<span class="material-icons">format_list_numbered</span>
+<select id="jumlahHelper" class="tap-highlight">
+<option value="">Pilih Jumlah Helper</option>
 </select>
+<label>Jumlah Helper</label>
+</div>
 
-<input type="number" id="hargaPerKarung" placeholder="Harga">
+<div class="input-container">
+<span class="material-icons">attach_money</span>
+<input type="number" id="hargaPerKarung" placeholder=" ">
+<label>Harga per Karung</label>
+</div>
 
-<select id="lokasiKerja"></select>
-<select id="pengurus"><option value="">Pilih Pengurus</option></select>
+<div class="input-container">
+<span class="material-icons">location_on</span>
+<select id="lokasiKerja" class="tap-highlight"></select>
+<label>Lokasi Kerja Aktif</label>
+</div>
 
-<button id="submitBtn" onclick="submitForm()" disabled>Submit</button>
+<div class="input-container">
+<span class="material-icons">badge</span>
+<select id="pengurus" class="tap-highlight">
+<option value="">Pilih Pengurus</option>
+</select>
+<label>Pengurus</label>
+</div>
+
+<button class="submit-btn" id="submitBtn" onclick="submitForm()" disabled>Submit</button>
 
 </div>
 </div>
@@ -103,112 +282,216 @@ const API_URL="https://script.google.com/macros/s/AKfycbxfPuJmalnJcxoLCfgvERkKMl
 
 let pinjamanList=[];
 
+const sandiInput=document.getElementById("sandiOperator");
+const toggleSandi=document.getElementById("toggleSandi");
+
+toggleSandi.addEventListener("click",()=>{
+if(sandiInput.type==="password"){
+sandiInput.type="text";
+toggleSandi.innerText="visibility_off";
+}else{
+sandiInput.type="password";
+toggleSandi.innerText="visibility";
+}
+});
+
+function goBack(){window.location.href="menu.html";}
+
 const tanggalInput=document.getElementById("tanggal");
 tanggalInput.value=new Date().toISOString().split("T")[0];
 
-const operatorSelect=document.getElementById("namaOperator");
-const lokasiSelect=document.getElementById("lokasiKerja");
-const pengurusSelect=document.getElementById("pengurus");
-const helperInput=document.getElementById("namaHelper");
-const helperBox=document.getElementById("helperBox");
 const jumlahHelper=document.getElementById("jumlahHelper");
-const sandiInput=document.getElementById("sandiOperator");
-const submitBtn=document.getElementById("submitBtn");
-
-function checkForm(){
-const valid =
-tanggalInput.value &&
-namaPetani.value &&
-jumlahKarungan.value &&
-operatorSelect.value &&
-sandiInput.value &&
-helperInput.value &&
-jumlahHelper.value &&
-hargaPerKarung.value &&
-lokasiSelect.value &&
-pengurusSelect.value;
-
-submitBtn.disabled=!valid;
+for(let i=1;i<=2;i++){
+let opt=document.createElement("option");
+opt.value=i;
+opt.text=i;
+jumlahHelper.appendChild(opt);
 }
 
-document.querySelectorAll("input,select").forEach(el=>{
-el.addEventListener("input",checkForm);
-el.addEventListener("change",checkForm);
-});
+const lokasiSelect=document.getElementById("lokasiKerja");
+const operatorSelect=document.getElementById("namaOperator");
+const pengurusSelect=document.getElementById("pengurus");
 
+const helperBox=document.getElementById("helperBox");
+const helperInput=document.getElementById("namaHelper");
+const helperWarning=document.getElementById("helperWarning");
+
+// ambil data
 fetch(API_URL)
 .then(res=>res.json())
 .then(data=>{
-
-data.lokasiKerjaAktif.forEach(l=>{
-let o=document.createElement("option");
-o.value=l;o.text=l;
-lokasiSelect.appendChild(o);
+// lokasi
+data.lokasiKerjaAktif.forEach(loc=>{
+let opt=document.createElement("option");
+opt.value=loc;
+opt.text=loc;
+lokasiSelect.appendChild(opt);
 });
 
-data.totalUnitAktif.forEach((o,i)=>{
-let op=document.createElement("option");
-op.value=o;op.text=o;
-operatorSelect.appendChild(op);
+// operator
+data.totalUnitAktif.forEach((op,i)=>{
+let opt=document.createElement("option");
+opt.value=op;
+opt.text=op;
+operatorSelect.appendChild(opt);
 pinjamanList[i]=data.totalPinjaman[i];
 });
 
+// pengurus ambil dari pendapatanBersih
+if(data.pendapatanBersih){
 data.pendapatanBersih.forEach(p=>{
-let op=document.createElement("option");
-op.value=p;op.text=p;
-pengurusSelect.appendChild(op);
+let opt=document.createElement("option");
+opt.value=p;
+opt.text=p;
+pengurusSelect.appendChild(opt);
 });
+}
 
-data.totalTransaksi.forEach(n=>{
+// helper
+data.totalTransaksi.forEach(nama=>{
 let div=document.createElement("div");
 div.className="helper-item";
 
 let cb=document.createElement("input");
 cb.type="checkbox";
-cb.value=n;
+cb.value=nama;
 
-cb.onchange=()=>{
+let label=document.createElement("span");
+label.textContent=nama;
+
+cb.addEventListener("change",()=>{
 let checked=helperBox.querySelectorAll("input:checked");
-helperInput.value=[...checked].map(x=>x.value).join(",");
-jumlahHelper.value=checked.length;
-checkForm();
-};
 
-div.onclick=()=>{
+if(checked.length>2){
+cb.checked=false;
+helperWarning.style.display="block";
+setTimeout(()=>helperWarning.style.display="none",2000);
+return;
+}
+
+helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
+jumlahHelper.value=checked.length;
+
+if(checked.length===2){
+helperBox.style.display="none";
+}
+});
+
+div.addEventListener("click",(e)=>{
+if(e.target.tagName!=="INPUT"){
 cb.checked=!cb.checked;
-cb.onchange();
-};
+cb.dispatchEvent(new Event("change"));
+}
+});
 
 div.appendChild(cb);
-div.appendChild(document.createTextNode(n));
+div.appendChild(label);
 helperBox.appendChild(div);
 });
-
 });
 
-helperInput.onclick=()=>{
-helperBox.style.display=helperBox.style.display==="block"?"none":"block";
-};
+helperInput.addEventListener("click",()=>{
+helperBox.style.display=
+helperBox.style.display==="block"?"none":"block";
+});
+
+const toast = document.getElementById("toast");
+
+function showToast(message, success=true){
+  toast.innerText = message;
+  toast.style.background = success ? "#1f8f45" : "#e74c3c";
+  toast.style.opacity = "1";
+  toast.style.transform = "translateX(-50%) translateY(0)";
+  setTimeout(()=>{
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(-50%) translateY(20px)";
+  },2000);
+}
+
+let submitting=false;
 
 function submitForm(){
-const idx=operatorSelect.selectedIndex-1;
-if(pinjamanList[idx]!=sandiInput.value){alert("Sandi salah");return;}
 
-fetch(API_URL,{
-method:"POST",
-body:JSON.stringify({
+if(submitting) return;
+
+const operatorIndex=operatorSelect.selectedIndex-1;
+const sandi=sandiInput.value;
+
+if(operatorIndex<0){ showToast("Pilih operator dulu", false); return; }
+if(pinjamanList[operatorIndex]!=sandi){ showToast("Sandi salah", false); return; }
+
+submitting=true;
+document.getElementById("submitBtn").disabled=true;
+
+const data={
 tanggal:tanggalInput.value,
-namaPetani:namaPetani.value,
-jumlahKarungan:jumlahKarungan.value,
+namaPetani:document.getElementById("namaPetani").value,
+jumlahKarungan:document.getElementById("jumlahKarungan").value,
 namaOperator:operatorSelect.value,
 namaHelper:helperInput.value,
 jumlahHelper:jumlahHelper.value,
-hargaPerKarung:hargaPerKarung.value,
+hargaPerKarung:document.getElementById("hargaPerKarung").value,
 lokasiKerja:lokasiSelect.value,
 pengurus:pengurusSelect.value
+};
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify(data)
 })
-});
+.then(res=>res.json())
+.then(resp=>{
+submitting=false;
+document.getElementById("submitBtn").disabled=false;
+
+if(resp.status==="success"){
+showToast("Laporan berhasil dikirim", true);
+
+document.querySelectorAll("#namaPetani,#jumlahKarungan,#namaHelper,#hargaPerKarung,#sandiOperator")
+.forEach(i=>i.value="");
+
+pengurusSelect.selectedIndex=0;
+helperBox.querySelectorAll("input").forEach(cb=>cb.checked=false);
+jumlahHelper.selectedIndex=0;
+lokasiSelect.selectedIndex=0;
+operatorSelect.selectedIndex=0;
 }
+});
+
+}
+// ===== VALIDASI FORM (TAMBAHAN TANPA MERUBAH SISTEM) =====
+
+const submitBtn = document.getElementById("submitBtn");
+
+function checkFormValidity(){
+
+const isValid =
+tanggalInput.value &&
+document.getElementById("namaPetani").value.trim() &&
+document.getElementById("jumlahKarungan").value.trim() &&
+operatorSelect.value &&
+sandiInput.value.trim() &&
+helperInput.value.trim() &&
+jumlahHelper.value &&
+document.getElementById("hargaPerKarung").value.trim() &&
+lokasiSelect.value &&
+pengurusSelect.value;
+
+submitBtn.disabled = !isValid;
+}
+
+// pantau semua input & select
+document.querySelectorAll("input, select").forEach(el=>{
+el.addEventListener("input", checkFormValidity);
+el.addEventListener("change", checkFormValidity);
+});
+
+// penting: trigger juga saat helper berubah (karena dia custom)
+const observer = new MutationObserver(checkFormValidity);
+observer.observe(helperBox, { subtree:true, childList:true });
+
+// panggil sekali saat load
+checkFormValidity();
 </script>
 
 </body>
