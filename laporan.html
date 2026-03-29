@@ -188,6 +188,8 @@ cursor:pointer;
 <div class="content">
 <div class="form-card">
 
+<!-- (SEMUA FORM TIDAK DIUBAH) -->
+
 <div class="input-container">
 <span class="material-icons">calendar_today</span>
 <input type="date" id="tanggal" class="tap-highlight" placeholder=" " readonly required>
@@ -304,84 +306,31 @@ const helperBox=document.getElementById("helperBox");
 const helperInput=document.getElementById("namaHelper");
 const helperWarning=document.getElementById("helperWarning");
 
-// ambil data
-fetch(API_URL)
-.then(res=>res.json())
-.then(data=>{
-// lokasi
-data.lokasiKerjaAktif.forEach(loc=>{
-let opt=document.createElement("option");
-opt.value=loc;
-opt.text=loc;
-lokasiSelect.appendChild(opt);
-});
+/* ================= VALIDASI BARU ================= */
+function isFormValid(){
+const fields = [
+tanggalInput.value,
+document.getElementById("namaPetani").value,
+document.getElementById("jumlahKarungan").value,
+operatorSelect.value,
+sandiInput.value,
+lokasiSelect.value,
+pengurusSelect.value
+];
 
-// operator
-data.totalUnitAktif.forEach((op,i)=>{
-let opt=document.createElement("option");
-opt.value=op;
-opt.text=op;
-operatorSelect.appendChild(opt);
-pinjamanList[i]=data.totalPinjaman[i];
-});
-
-// pengurus ambil dari pendapatanBersih
-if(data.pendapatanBersih){
-data.pendapatanBersih.forEach(p=>{
-let opt=document.createElement("option");
-opt.value=p;
-opt.text=p;
-pengurusSelect.appendChild(opt);
-});
+for(let f of fields){
+if(!f || f.toString().trim()===""){
+return false;
+}
 }
 
-// helper
-data.totalTransaksi.forEach(nama=>{
-let div=document.createElement("div");
-div.className="helper-item";
-
-let cb=document.createElement("input");
-cb.type="checkbox";
-cb.value=nama;
-
-let label=document.createElement("span");
-label.textContent=nama;
-
-cb.addEventListener("change",()=>{
-let checked=helperBox.querySelectorAll("input:checked");
-
-if(checked.length>2){
-cb.checked=false;
-helperWarning.style.display="block";
-setTimeout(()=>helperWarning.style.display="none",2000);
-return;
+if(jumlahHelper.value && !helperInput.value){
+return false;
 }
 
-helperInput.value=Array.from(checked).map(x=>x.value).join(", ");
-jumlahHelper.value=checked.length;
-
-if(checked.length===2){
-helperBox.style.display="none";
+return true;
 }
-});
-
-div.addEventListener("click",(e)=>{
-if(e.target.tagName!=="INPUT"){
-cb.checked=!cb.checked;
-cb.dispatchEvent(new Event("change"));
-}
-});
-
-div.appendChild(cb);
-div.appendChild(label);
-helperBox.appendChild(div);
-});
-});
-
-helperInput.addEventListener("click",()=>{
-helperBox.style.display=
-helperBox.style.display==="block"?"none":"block";
-});
+/* =============================================== */
 
 const toast = document.getElementById("toast");
 
@@ -399,6 +348,13 @@ function showToast(message, success=true){
 let submitting=false;
 
 function submitForm(){
+
+/* ====== TRIGGER VALIDASI ====== */
+if(!isFormValid()){
+showToast("Semua field wajib diisi", false);
+return;
+}
+/* ============================= */
 
 if(submitting) return;
 
