@@ -97,7 +97,7 @@
   to{opacity:1;}
 }
 
-/* ================= MENU ASLI ================= */
+/* ================= MENU ================= */
 .menu-item, .menu-trigger {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
@@ -119,21 +119,16 @@ body{
   background:linear-gradient(180deg,#102a18,#07140c);
   display:flex;
   flex-direction:column;
-  position:relative;
 }
 
+/* HEADER */
 .header{
-  padding:20px;
+  padding:18px 20px;
   background:#0f301b;
   display:flex;
   justify-content:space-between;
   align-items:center;
   box-shadow:0 4px 15px rgba(0,0,0,0.6);
-}
-
-.brand{
-  display:flex;
-  flex-direction:column;
 }
 
 .brand h1{
@@ -146,15 +141,17 @@ body{
 .brand span{
   font-size:0.7rem;
   color:#b7d8c2;
+  margin-top:3px;
+  display:block;
 }
 
+/* MENU BUTTON */
 .menu-trigger{
   width:32px;
   height:32px;
   display:flex;
   justify-content:center;
   align-items:center;
-  text-decoration:none;
 }
 
 .dot-grid{
@@ -172,20 +169,22 @@ body{
   box-shadow:0 0 8px rgba(158,255,109,0.8);
 }
 
+/* MENU AREA */
 .menu-area{
   flex:1;
-  padding:15px;
+  padding:18px 15px;
   display:flex;
   flex-direction:column;
-  gap:15px;
+  gap:16px;
   overflow-y:auto;
 }
 
+/* MENU ITEM */
 .menu-item{
   display:flex;
   align-items:center;
-  padding:18px;
-  border-radius:20px;
+  padding:16px;
+  border-radius:18px;
   background:linear-gradient(145deg,#153c22,#0d2416);
   box-shadow:0 10px 25px rgba(0,0,0,0.6);
   border:1px solid rgba(158,255,109,0.2);
@@ -197,6 +196,7 @@ body{
   background:#000;
 }
 
+/* ICON */
 .icon-box{
   width:45px;
   height:45px;
@@ -207,19 +207,25 @@ body{
   align-items:center;
   color:#9eff6d;
   margin-right:15px;
+  font-weight:600;
 }
 
-.menu-text b{ color:#fff; }
-.menu-text span{ color:#9db8a7; }
-
-.bottom-nav{
-  height:60px;
-  background:#0f301b;
+/* TEXT */
+.menu-text{
   display:flex;
-  justify-content:space-around;
-  align-items:center;
+  flex-direction:column;
+  gap:4px;
 }
-.nav.active{ color:#9eff6d; }
+
+.menu-text b{
+  color:#ffffff;
+  font-size:0.95rem;
+}
+
+.menu-text span{
+  color:#9db8a7;
+  font-size:0.75rem;
+}
 
 </style>
 </head>
@@ -233,7 +239,7 @@ body{
   <div class="progress"><div class="progress-bar"></div></div>
 </div>
 
-<!-- MENU FULL -->
+<!-- MENU -->
 <div class="app">
 
   <div class="header">
@@ -302,13 +308,6 @@ body{
 
   </div>
 
-  <div class="bottom-nav">
-    <div class="nav active">Dashboard</div>
-    <div class="nav">Data</div>
-    <div class="nav">Laporan</div>
-    <div class="nav">Setting</div>
-  </div>
-
 </div>
 
 <script>
@@ -341,11 +340,9 @@ setTimeout(()=>{
 },3500);
 </script>
 
-  <script>
+<script>
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(() => console.log('SW aktif'))
-    .catch(err => console.log('SW gagal', err));
+  navigator.serviceWorker.register('/service-worker.js');
 }
 </script>
 
