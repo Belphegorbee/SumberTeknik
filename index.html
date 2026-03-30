@@ -186,5 +186,16 @@ setTimeout(()=>{
         .catch(error => {
           console.log('Service Worker registration failed:', error);
 
+<!-- Script Redirect setelah animasi selesai -->
+<script>
+  // Ganti angka 3000 dengan durasi animasi kamu (dalam milidetik)
+  // Contoh: kalau animasi kamu 3 detik, pakai 3000
+  // kalau 4.5 detik, pakai 4500
+
+  setTimeout(() => {
+    window.location.replace('/menu.html');   // redirect bersih, tidak bisa tombol back
+  }, 3000); 
+</script>
+          
 </body>
 </html>
