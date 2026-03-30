@@ -1,37 +1,42 @@
-const CACHE_NAME = 'sumberteknik-v1';
+const CACHE_NAME = 'sumberteknik-v2';
 
 const urlsToCache = [
-  'index.html',
-  'menu.html',
-  'dashboard.html',
-  'pembayaran.html',
-  'subpembayaran.html',
-  'laporan.html',
-  'listtagihan.html',
-  'gajih_operator.html',
-  'pengisian_solar.html',
-  'REPAIR.html',
-  'background.png',
-  'logo.png',
-  'splashscreen.png'
+  '/',
+  '/index.html',
+  '/dashboard.html',
+  '/pembayaran.html',
+  '/subpembayaran.html',
+  '/laporan.html',
+  '/listtagihan.html',
+  '/gajih_operator.html',
+  '/gajih_helper.html',
+  '/pengisian_solar.html',
+  '/REPAIR.html',
+  '/background.png',
+  '/logo.png',
+  '/splashscreen.png'
 ];
 
-// INSTALL
+// ================= INSTALL =================
 self.addEventListener('install', event => {
+  self.skipWaiting(); // langsung aktif tanpa nunggu reload
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
   );
 });
 
-// FETCH
+// ================= FETCH =================
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
 
+        // kalau ada di cache → pakai
         if (response) return response;
 
+        // kalau tidak → ambil dari network
         return fetch(event.request)
           .then(networkResponse => {
 
@@ -48,14 +53,15 @@ self.addEventListener('fetch', event => {
             return networkResponse;
           })
           .catch(() => {
-            return caches.match('index.html');
+            // fallback saat offline total
+            return caches.match('/index.html');
           });
 
       })
   );
 });
 
-// ACTIVATE
+// ================= ACTIVATE =================
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(names => {
@@ -66,6 +72,6 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim()) // langsung kontrol semua tab
   );
 });
