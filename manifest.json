@@ -3,7 +3,6 @@
   "short_name": "SumberTeknik",
   "description": "Teknologi Pertanian & Alat Berat",
   "start_url": "index.html",
-  "scope": "./",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
@@ -12,14 +11,12 @@
     {
       "src": "logo-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "logo-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
