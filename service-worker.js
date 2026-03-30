@@ -27,13 +27,27 @@ self.addEventListener('install', event => {
   );
 });
 
-// Fetch event (Cache First Strategy)
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Kembalikan dari cache jika ada, jika tidak fetch dari network
-        return response || fetch(event.request);
+        if (response) return response;
+
+        return fetch(event.request).then(
+          networkResponse => {
+            // Cache response yang sukses untuk kunjungan berikutnya
+            if (networkResponse && networkResponse.status === 200) {
+              const responseClone = networkResponse.clone();
+              caches.open(CACHE_NAME).then(cache => {
+                cache.put(event.request, responseClone);
+              });
+            }
+            return networkResponse;
+          }
+        ).catch(() => {
+          // Kalau offline dan tidak ada di cache, bisa return offline page nanti
+          console.log('Offline & no cache for:', event.request.url);
+        });
       })
   );
 });
