@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Input Repair - Sumber Teknik</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+user-select:none;
+-webkit-user-select:none;
+}
+
+body{
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+}
+
+.app{
+width:100%;
+max-width:430px;
+background:#f7fbf8;
+height:100vh;
+display:flex;
+flex-direction:column;
+box-shadow:0 0 40px rgba(0,0,0,0.25);
+}
+
+/* HEADER */
+.header{
+padding:20px;
+background:linear-gradient(135deg,#0d5c2a,#1f8f45);
+color:white;
+display:flex;
+align-items:center;
+gap:12px;
+position:sticky;
+top:0;
+z-index:10;
+}
+
+.back-btn{
+cursor:pointer;
+font-size:24px;
+}
+
+.header-text h1{
+font-size:1.1rem;
+font-weight:700;
+}
+
+/* CONTENT */
+.content{
+flex:1;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:16px;
+padding:18px;
+}
+
+.form-card{
+background:white;
+border-radius:18px;
+padding:18px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* INPUT NORMAL */
+.input-container{
+position:relative;
+margin-bottom:16px;
+}
+
+.input-container input,
+.input-container select{
+width:100%;
+padding:14px 12px 14px 44px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+background:white;
+}
+
+.input-container input:focus,
+.input-container select:focus{
+border-color:#1f8f45;
+outline:none;
+}
+
+.input-container label{
+position:absolute;
+left:44px;
+top:14px;
+color:#4b5e55;
+font-size:0.85rem;
+pointer-events:none;
+transition:0.2s;
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label,
+.input-container select:focus + label,
+.input-container select:not([value=""]) + label{
+top:-8px;
+left:12px;
+font-size:0.7rem;
+background:white;
+padding:0 4px;
+color:#1f8f45;
+}
+
+/* ICON KHUSUS INPUT */
+.input-container .material-icons{
+position:absolute;
+left:12px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+font-size:20px;
+pointer-events:none;
+}
+
+/* PASSWORD */
+.password-wrapper{
+position:relative;
+margin-bottom:16px;
+}
+
+.password-wrapper input{
+width:100%;
+padding:14px 44px 14px 44px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+}
+
+.password-wrapper label{
+position:absolute;
+left:44px;
+top:14px;
+color:#4b5e55;
+font-size:0.85rem;
+transition:0.2s;
+background:white;
+padding:0 4px;
+pointer-events:none;
+}
+
+.password-wrapper input:focus + label,
+.password-wrapper input:not(:placeholder-shown) + label{
+top:-8px;
+left:12px;
+font-size:0.7rem;
+color:#1f8f45;
+}
+
+/* ICON PASSWORD */
+.password-wrapper .left-icon{
+position:absolute;
+left:12px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+pointer-events:none;
+}
+
+.password-wrapper .right-icon{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+color:#1f8f45;
+}
+
+/* BUTTON */
+.submit-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+margin-top:10px;
+cursor:pointer;
+}
+
+.submit-btn:disabled{
+background:#a1c8a2;
+cursor:not-allowed;
+}
+
+/* PREVIEW */
+.preview-box{
+background:#eef6f0;
+border-radius:12px;
+padding:12px;
+margin-top:10px;
+font-size:0.9rem;
+color:#1f8f45;
+font-weight:600;
+display:none;
+}
+
+/* POPUP */
+#popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+z-index:1000;
+opacity:0;
+transition:opacity 0.25s;
+}
+
+.popup-content{
+background:white;
+padding:24px 32px;
+border-radius:16px;
+text-align:center;
+box-shadow:0 8px 25px rgba(0,0,0,0.3);
+transform:scale(0.8);
+transition:transform 0.25s;
+}
+
+.popup-content button{
+margin-top:20px;
+padding:10px 20px;
+border:none;
+border-radius:10px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+<span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+<div class="header-text">
+<h1>Pengisian Repair</h1>
+</div>
+</div>
+
+<div class="content">
+<div class="form-card">
+
+<div class="input-container">
+<span class="material-icons">calendar_today</span>
+<input type="date" id="tanggal" placeholder=" " readonly>
+<label>Tanggal Repair</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">person</span>
+<select id="namaOperator">
+<option value="">Pilih Operator</option>
+</select>
+<label>Nama Operator</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">build</span>
+<input type="text" id="kerusakanPart" placeholder=" ">
+<label>Kerusakan / Part</label>
+</div>
+
+<div class="input-container">
+<span class="material-icons">attach_money</span>
+<input type="number" id="hargaPart" placeholder=" ">
+<label>Harga Part</label>
+</div>
+
+<div class="password-wrapper">
+<input type="password" id="sandiOperator" placeholder=" ">
+<label>Sandi Operator</label>
+<span class="material-icons left-icon">lock</span>
+<span class="material-icons right-icon" id="toggleSandi">visibility</span>
+</div>
+
+<button class="submit-btn" id="submitBtn" onclick="submitForm()">Simpan</button>
+
+<div class="preview-box" id="previewBox">
+Total Biaya Repair : <span id="totalRepair">0</span>
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="popup">
+<div class="popup-content">
+<p id="popupMsg"></p>
+<button onclick="closePopup()">Tutup</button>
+</div>
+</div>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbxfPuJmalnJcxoLCfgvERkKMlPX1j2e5PEPn_zgpxDj9aszo8g9tp1UtCqPei_5AQgv/exec";
+
+let pinjamanList=[];
+
+function goBack(){window.location.href="menu.html";}
+
+const tanggalInput=document.getElementById("tanggal");
+tanggalInput.value=new Date().toISOString().split("T")[0];
+
+const operatorSelect=document.getElementById("namaOperator");
+
+fetch(API_URL)
+.then(res=>res.json())
+.then(data=>{
+if(data.totalUnitAktif){
+data.totalUnitAktif.forEach((op,i)=>{
+let opt=document.createElement("option");
+opt.value=op;
+opt.text=op;
+operatorSelect.appendChild(opt);
+pinjamanList[i]=data.totalPinjaman[i];
+});
+}
+});
+
+const sandiInput=document.getElementById("sandiOperator");
+const toggleSandi=document.getElementById("toggleSandi");
+
+toggleSandi.onclick=()=>{
+sandiInput.type = sandiInput.type==="password"?"text":"password";
+toggleSandi.innerText = sandiInput.type==="text"?"visibility_off":"visibility";
+};
+
+const kerusakanInput=document.getElementById("kerusakanPart");
+const hargaInput=document.getElementById("hargaPart");
+const previewBox=document.getElementById("previewBox");
+const totalRepair=document.getElementById("totalRepair");
+
+function formatRupiah(num){
+return Number(num).toLocaleString("id-ID");
+}
+
+function hitungTotal(){
+let harga=hargaInput.value;
+if(harga){
+totalRepair.innerText=formatRupiah(harga);
+previewBox.style.display="block";
+}else{
+previewBox.style.display="none";
+}
+}
+
+hargaInput.addEventListener("input",hitungTotal);
+
+function showPopup(msg){
+let popup=document.getElementById("popup");
+document.getElementById("popupMsg").innerText=msg;
+popup.style.display="flex";
+setTimeout(()=>popup.style.opacity="1",10);
+}
+
+function closePopup(){
+let popup=document.getElementById("popup");
+popup.style.opacity="0";
+setTimeout(()=>popup.style.display="none",200);
+}
+
+let submitting=false;
+
+function submitForm(){
+if(submitting) return;
+
+const idx=operatorSelect.selectedIndex-1;
+if(idx<0){showPopup("Pilih operator dulu");return;}
+if(pinjamanList[idx]!=sandiInput.value){showPopup("Sandi salah");return;}
+if(!kerusakanInput.value || !hargaInput.value){showPopup("Lengkapi data");return;}
+
+submitting=true;
+document.getElementById("submitBtn").disabled=true;
+
+const data={
+action:"submitRepair",
+tanggal:tanggalInput.value,
+namaOperator:operatorSelect.value,
+kerusakanPart:kerusakanInput.value,
+hargaPart:hargaInput.value
+};
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify(data)
+})
+.then(res=>res.json())
+.then(resp=>{
+submitting=false;
+document.getElementById("submitBtn").disabled=false;
+
+if(resp.status==="success"){
+showPopup("Data berhasil disimpan");
+kerusakanInput.value="";
+hargaInput.value="";
+operatorSelect.selectedIndex=0;
+previewBox.style.display="none";
+}
+})
+.catch(()=>{
+submitting=false;
+document.getElementById("submitBtn").disabled=false;
+alert("Terjadi kesalahan.");
+});
+}
+</script>
+
+</body>
+</html>
