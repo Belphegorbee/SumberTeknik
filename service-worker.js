@@ -13,7 +13,8 @@ const urlsToCache = [
   '/pengisian_solar.html',
   '/REPAIR.html',
   '/background.png',
-  '/logo.png',
+  '/logo-192.png',
+  '/logo-512.png',
   '/splashscreen.png'
 ];
 
