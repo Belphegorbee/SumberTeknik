@@ -176,25 +176,21 @@ setTimeout(()=>{
 
 </script>
 
-   <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registered successfully:', registration.scope);
-        })
-        .catch(error => {
-          console.log('Service Worker registration failed:', error);
-
-<!-- Script Redirect setelah animasi selesai -->
 <script>
-  // Ganti angka 3000 dengan durasi animasi kamu (dalam milidetik)
-  // Contoh: kalau animasi kamu 3 detik, pakai 3000
-  // kalau 4.5 detik, pakai 4500
+  // Cek apakah dibuka dari PWA atau dari query parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFromPWA = urlParams.get('source') === 'pwa' || 
+                    window.matchMedia('(display-mode: standalone)').matches;
 
-  setTimeout(() => {
-    window.location.replace('/menu.html');   // redirect bersih, tidak bisa tombol back
-  }, 5000); 
+  if (isFromPWA) {
+    // Langsung redirect ke menu.html tanpa menunggu lama
+    window.location.replace('/menu.html');
+  } else {
+    // Untuk buka di browser biasa, tunggu animasi selesai
+    setTimeout(() => {
+      window.location.replace('/menu.html');
+    }, 3500);   // ← ubah sesuai durasi animasi kamu
+  }
 </script>
           
 </body>
