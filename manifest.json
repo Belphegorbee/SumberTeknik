@@ -2,7 +2,8 @@
   "name": "SumberTeknik",
   "short_name": "SumberTeknik",
   "description": "Teknologi Pertanian & Alat Berat",
-  "start_url": "/?source=pwa",        // ← Ini yang baru
+  "start_url": "index.html?source=pwa",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
