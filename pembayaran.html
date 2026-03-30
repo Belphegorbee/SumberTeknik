@@ -23,17 +23,9 @@ body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;jus
 
 .form-card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
 
-/* Tap highlight */
-.tap-highlight{
-transition:0.15s;
-background:#00000022;
-}
-input.tap-highlight,select.tap-highlight{
--webkit-tap-highlight-color:transparent;
-outline:none;
-}
+.tap-highlight{transition:0.15s;background:#00000022;}
+input.tap-highlight,select.tap-highlight{-webkit-tap-highlight-color:transparent;outline:none;}
 
-/* Floating label */
 .input-container{position:relative;margin-bottom:16px;}
 .input-container input,.input-container select{
 width:100%;
@@ -44,9 +36,7 @@ font-size:0.95rem;
 background:white;
 }
 
-.input-container input:focus,.input-container select:focus{
-border-color:#1f8f45;
-}
+.input-container input:focus,.input-container select:focus{border-color:#1f8f45;}
 
 .input-container label{
 position:absolute;
@@ -79,7 +69,6 @@ color:#1f8f45;
 font-size:20px;
 }
 
-/* button */
 .submit-btn{
 width:100%;
 padding:12px;
@@ -92,12 +81,8 @@ margin-top:10px;
 cursor:pointer;
 }
 
-.submit-btn:disabled{
-background:#a1c8a2;
-cursor:not-allowed;
-}
+.submit-btn:disabled{background:#a1c8a2;cursor:not-allowed;}
 
-/* popup */
 #popupBayar{
 display:none;
 position:fixed;
@@ -165,7 +150,7 @@ cursor:pointer;
 <label>Jumlah Pembayaran</label>
 </div>
 
-  <div class="input-container">
+<div class="input-container">
 <span class="material-icons">engineering</span>
 <select id="namaOperator" class="tap-highlight">
 <option value="">Pilih Operator</option>
@@ -202,52 +187,52 @@ window.location.href="menu.html";
 }
 
 /* load daftar petani */
-
 const petaniSelect=document.getElementById("namaPetani");
 
 fetch(API_URL+"?action=getPetaniPembayaran")
-
 .then(res=>res.json())
-
 .then(data=>{
-
 petaniSelect.innerHTML='<option value="">Pilih Petani</option>';
-
 data.petani.forEach(nama=>{
 let opt=document.createElement("option");
 opt.value=nama;
 opt.text=nama;
 petaniSelect.appendChild(opt);
 });
+});
 
+/* 🔥 load operator dari dashboard */
+const operatorSelect = document.getElementById("namaOperator");
+
+fetch(API_URL)
+.then(res=>res.json())
+.then(data=>{
+operatorSelect.innerHTML='<option value="">Pilih Operator</option>';
+data.totalUnitAktif.forEach(nama=>{
+let opt=document.createElement("option");
+opt.value=nama;
+opt.text=nama;
+operatorSelect.appendChild(opt);
+});
 });
 
 /* popup */
-
 function showPopup(jumlah){
-
 let popup=document.getElementById("popupBayar");
 let content=document.getElementById("popupContent");
-
 document.getElementById("jumlahPopup").innerText="Rp "+jumlah;
-
 popup.style.display="flex";
 void popup.offsetWidth;
 popup.style.opacity="1";
 content.style.transform="scale(1)";
-
 }
 
 function closePopup(){
-
 let popup=document.getElementById("popupBayar");
 let content=document.getElementById("popupContent");
-
 popup.style.opacity="0";
 content.style.transform="scale(0.8)";
-
 setTimeout(()=>popup.style.display="none",250);
-
 }
 
 document.getElementById("popupBayar").addEventListener("click",(e)=>{
@@ -255,7 +240,6 @@ if(e.target.id==="popupBayar") closePopup();
 });
 
 /* submit pembayaran */
-
 let submitting=false;
 
 function submitPembayaran(){
@@ -264,8 +248,10 @@ if(submitting) return;
 
 const nama=petaniSelect.value;
 const jumlah=document.getElementById("jumlahBayar").value;
+const operator=document.getElementById("namaOperator").value;
+const setor=document.getElementById("setorKeBos").value;
 
-if(!nama || !jumlah){
+if(!nama || !jumlah || !operator){
 alert("Isi data terlebih dahulu");
 return;
 }
@@ -278,12 +264,13 @@ method:"POST",
 body:JSON.stringify({
 action:"bayarPetani",
 namaPetani:nama,
-jumlahBayar:jumlah
+jumlahBayar:jumlah,
+namaOperator:operator,
+setorKeBos:setor
 })
 })
 
 .then(res=>res.json())
-
 .then(resp=>{
 
 submitting=false;
@@ -294,12 +281,13 @@ if(resp.status==="success"){
 showPopup(jumlah);
 
 document.getElementById("jumlahBayar").value="";
+document.getElementById("setorKeBos").value="";
 petaniSelect.selectedIndex=0;
+operatorSelect.selectedIndex=0;
 
 }
 
 })
-
 .catch(()=>{
 submitting=false;
 document.getElementById("submitBtn").disabled=false;
