@@ -2,7 +2,7 @@
   "name": "Sumber Teknik",
   "short_name": "SumberTeknik",
   "description": "Teknologi Pertanian & Alat Berat",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
