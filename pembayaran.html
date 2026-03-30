@@ -69,6 +69,35 @@ color:#1f8f45;
 font-size:20px;
 }
 
+/* PASSWORD KHUSUS */
+.password-wrapper{
+position:relative;
+margin-bottom:16px;
+}
+.password-wrapper input{
+width:100%;
+padding:14px 44px 14px 36px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+}
+.password-wrapper .left-icon{
+position:absolute;
+left:8px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+}
+.password-wrapper .right-icon{
+position:absolute;
+right:12px;
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+color:#1f8f45;
+}
+
+/* BUTTON */
 .submit-btn{
 width:100%;
 padding:12px;
@@ -83,6 +112,7 @@ cursor:pointer;
 
 .submit-btn:disabled{background:#a1c8a2;cursor:not-allowed;}
 
+/* POPUP */
 #popupBayar{
 display:none;
 position:fixed;
@@ -158,6 +188,13 @@ cursor:pointer;
 <label>Nama Operator</label>
 </div>
 
+<!-- 🔐 SANDI OPERATOR -->
+<div class="password-wrapper">
+<input type="password" id="sandiOperator" placeholder="Sandi Operator">
+<span class="material-icons left-icon">lock</span>
+<span class="material-icons right-icon" id="toggleSandi">visibility</span>
+</div>
+
 <div class="input-container">
 <span class="material-icons">account_balance</span>
 <input type="number" id="setorKeBos" placeholder=" ">
@@ -182,9 +219,7 @@ cursor:pointer;
 
 const API_URL="https://script.google.com/macros/s/AKfycbxfPuJmalnJcxoLCfgvERkKMlPX1j2e5PEPn_zgpxDj9aszo8g9tp1UtCqPei_5AQgv/exec";
 
-function goBack(){
-window.location.href="menu.html";
-}
+function goBack(){ window.location.href="menu.html"; }
 
 /* load daftar petani */
 const petaniSelect=document.getElementById("namaPetani");
@@ -192,51 +227,60 @@ const petaniSelect=document.getElementById("namaPetani");
 fetch(API_URL+"?action=getPetaniPembayaran")
 .then(res=>res.json())
 .then(data=>{
-petaniSelect.innerHTML='<option value="">Pilih Petani</option>';
-data.petani.forEach(nama=>{
-let opt=document.createElement("option");
-opt.value=nama;
-opt.text=nama;
-petaniSelect.appendChild(opt);
-});
+  petaniSelect.innerHTML='<option value="">Pilih Petani</option>';
+  data.petani.forEach(nama=>{
+    let opt=document.createElement("option");
+    opt.value=nama;
+    opt.text=nama;
+    petaniSelect.appendChild(opt);
+  });
 });
 
-/* 🔥 load operator dari dashboard */
+/* load operator + sandi */
 const operatorSelect = document.getElementById("namaOperator");
+const sandiInput = document.getElementById("sandiOperator");
+const toggleSandi = document.getElementById("toggleSandi");
+let operatorPasswords = [];
+
+toggleSandi.onclick = () => {
+  sandiInput.type = sandiInput.type === "password" ? "text" : "password";
+  toggleSandi.innerText = sandiInput.type === "text" ? "visibility_off" : "visibility";
+};
 
 fetch(API_URL)
 .then(res=>res.json())
 .then(data=>{
-operatorSelect.innerHTML='<option value="">Pilih Operator</option>';
-data.totalUnitAktif.forEach(nama=>{
-let opt=document.createElement("option");
-opt.value=nama;
-opt.text=nama;
-operatorSelect.appendChild(opt);
-});
+  operatorSelect.innerHTML='<option value="">Pilih Operator</option>';
+  data.totalUnitAktif.forEach((nama,i)=>{
+    let opt=document.createElement("option");
+    opt.value=nama;
+    opt.text=nama;
+    operatorSelect.appendChild(opt);
+    operatorPasswords[i] = data.totalPinjaman[i]; // pastikan API mengirim sandi operator
+  });
 });
 
 /* popup */
 function showPopup(jumlah){
-let popup=document.getElementById("popupBayar");
-let content=document.getElementById("popupContent");
-document.getElementById("jumlahPopup").innerText="Rp "+jumlah;
-popup.style.display="flex";
-void popup.offsetWidth;
-popup.style.opacity="1";
-content.style.transform="scale(1)";
+  let popup=document.getElementById("popupBayar");
+  let content=document.getElementById("popupContent");
+  document.getElementById("jumlahPopup").innerText="Rp "+jumlah;
+  popup.style.display="flex";
+  void popup.offsetWidth;
+  popup.style.opacity="1";
+  content.style.transform="scale(1)";
 }
 
 function closePopup(){
-let popup=document.getElementById("popupBayar");
-let content=document.getElementById("popupContent");
-popup.style.opacity="0";
-content.style.transform="scale(0.8)";
-setTimeout(()=>popup.style.display="none",250);
+  let popup=document.getElementById("popupBayar");
+  let content=document.getElementById("popupContent");
+  popup.style.opacity="0";
+  content.style.transform="scale(0.8)";
+  setTimeout(()=>popup.style.display="none",250);
 }
 
 document.getElementById("popupBayar").addEventListener("click",(e)=>{
-if(e.target.id==="popupBayar") closePopup();
+  if(e.target.id==="popupBayar") closePopup();
 });
 
 /* submit pembayaran */
@@ -244,55 +288,56 @@ let submitting=false;
 
 function submitPembayaran(){
 
-if(submitting) return;
+  if(submitting) return;
 
-const nama=petaniSelect.value;
-const jumlah=document.getElementById("jumlahBayar").value;
-const operator=document.getElementById("namaOperator").value;
-const setor=document.getElementById("setorKeBos").value;
+  const nama=petaniSelect.value;
+  const jumlah=document.getElementById("jumlahBayar").value;
+  const operator=operatorSelect.value;
+  const idx = operatorSelect.selectedIndex - 1;
+  const setor=document.getElementById("setorKeBos").value;
 
-if(!nama || !jumlah || !operator){
-alert("Isi data terlebih dahulu");
-return;
-}
+  if(!nama || !jumlah || !operator){
+    alert("Isi data terlebih dahulu");
+    return;
+  }
 
-submitting=true;
-document.getElementById("submitBtn").disabled=true;
+  if(idx<0 || sandiInput.value!==operatorPasswords[idx]){
+    alert("Sandi Operator salah");
+    return;
+  }
 
-fetch(API_URL,{
-method:"POST",
-body:JSON.stringify({
-action:"bayarPetani",
-namaPetani:nama,
-jumlahBayar:jumlah,
-namaOperator:operator,
-setorKeBos:setor
-})
-})
+  submitting=true;
+  document.getElementById("submitBtn").disabled=true;
 
-.then(res=>res.json())
-.then(resp=>{
+  fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"bayarPetani",
+      namaPetani:nama,
+      jumlahBayar:jumlah,
+      namaOperator:operator,
+      setorKeBos:setor
+    })
+  })
+  .then(res=>res.json())
+  .then(resp=>{
+    submitting=false;
+    document.getElementById("submitBtn").disabled=false;
 
-submitting=false;
-document.getElementById("submitBtn").disabled=false;
-
-if(resp.status==="success"){
-
-showPopup(jumlah);
-
-document.getElementById("jumlahBayar").value="";
-document.getElementById("setorKeBos").value="";
-petaniSelect.selectedIndex=0;
-operatorSelect.selectedIndex=0;
-
-}
-
-})
-.catch(()=>{
-submitting=false;
-document.getElementById("submitBtn").disabled=false;
-alert("Terjadi kesalahan.");
-});
+    if(resp.status==="success"){
+      showPopup(jumlah);
+      document.getElementById("jumlahBayar").value="";
+      document.getElementById("setorKeBos").value="";
+      petaniSelect.selectedIndex=0;
+      operatorSelect.selectedIndex=0;
+      sandiInput.value="";
+    }
+  })
+  .catch(()=>{
+    submitting=false;
+    document.getElementById("submitBtn").disabled=false;
+    alert("Terjadi kesalahan.");
+  });
 
 }
 
