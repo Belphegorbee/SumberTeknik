@@ -1,46 +1,27 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  
-<!-- Manifest -->
-<link rel="manifest" href="manifest.json">
 
-<!-- Theme Color -->
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1a1a1a">
 
-<!-- Splash Screen untuk iOS (menggunakan 1080x1920) -->
-<link rel="apple-touch-startup-image" href="splashscreen.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
-<link rel="apple-touch-startup-image" href="splashscreen.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)">
-<link rel="apple-touch-startup-image" href="splashscreen.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
-<link rel="apple-touch-startup-image" href="splashscreen.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)">
-
-<!-- Icon untuk iOS -->
-<link rel="apple-touch-icon" href="logo.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SumberTeknik">
-  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Loading Sumber Teknik</title>
+<title>Sumber Teknik</title>
 
 <style>
-html, body {
+*{
   margin:0;
   padding:0;
-  height:100%;
-  width:100%;
-  font-family:'Segoe UI', sans-serif;
-  overflow:hidden;
+  box-sizing:border-box;
+  -webkit-user-select:none;
+  user-select:none;
 }
 
-/* ==================== LOADING SCREEN ==================== */
+/* ================= LOADING ================= */
 #loading {
   position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  inset:0;
   background:
     radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 40%),
     linear-gradient(135deg,#0f4c00,#072e00);
@@ -48,28 +29,19 @@ html, body {
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  padding:10px;
-  box-sizing:border-box;
-  z-index:1000;
+  z-index:9999;
   transition:opacity 0.8s ease;
 }
 
 .word-box {
   display:flex;
-  justify-content:center;
   gap:8px;
-  flex-wrap:nowrap;
-  max-width:100%;
   margin-bottom:25px;
 }
 
 .letter-box {
   width:50px;
   height:50px;
-  min-width:40px;
-  min-height:40px;
-  max-width:60px;
-  max-height:60px;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -81,11 +53,9 @@ html, body {
   font-size:5vw;
   opacity:0;
   transform: translateY(-50px);
-  box-sizing:border-box;
   box-shadow:0 0 15px rgba(158,255,109,0.4);
 }
 
-/* Animasi bounce */
 @keyframes bounce {
   0% { transform: translateY(-50px); opacity:0; }
   50% { transform: translateY(0); opacity:1; }
@@ -93,7 +63,6 @@ html, body {
   100% { transform: translateY(0); opacity:1; }
 }
 
-/* Tagline */
 .tagline{
   margin-top:10px;
   font-size:0.8rem;
@@ -104,7 +73,6 @@ html, body {
   animation-delay:1.5s;
 }
 
-/* Progress Line */
 .progress{
   width:120px;
   height:3px;
@@ -122,68 +90,256 @@ html, body {
 }
 
 @keyframes loadBar{
-  0%{width:0%;}
-  100%{width:100%;}
+  to{width:100%;}
 }
 
 @keyframes fadeIn{
   to{opacity:1;}
 }
+
+/* ================= MENU ASLI ================= */
+.menu-item, .menu-trigger {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body{
+  height:100vh;
+  background:#0b1f12;
+  font-family:'Segoe UI',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+}
+
+.app{
+  width:100%;
+  max-width:430px;
+  height:100vh;
+  background:linear-gradient(180deg,#102a18,#07140c);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.header{
+  padding:20px;
+  background:#0f301b;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 4px 15px rgba(0,0,0,0.6);
+}
+
+.brand{
+  display:flex;
+  flex-direction:column;
+}
+
+.brand h1{
+  font-size:1.1rem;
+  font-weight:700;
+  color:#9eff6d;
+  letter-spacing:1px;
+}
+
+.brand span{
+  font-size:0.7rem;
+  color:#b7d8c2;
+}
+
+.menu-trigger{
+  width:32px;
+  height:32px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-decoration:none;
+}
+
+.dot-grid{
+  display:grid;
+  grid-template-columns:repeat(3,6px);
+  grid-template-rows:repeat(2,6px);
+  gap:6px;
+}
+
+.dot-grid span{
+  width:6px;
+  height:6px;
+  background:#9eff6d;
+  border-radius:50%;
+  box-shadow:0 0 8px rgba(158,255,109,0.8);
+}
+
+.menu-area{
+  flex:1;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  overflow-y:auto;
+}
+
+.menu-item{
+  display:flex;
+  align-items:center;
+  padding:18px;
+  border-radius:20px;
+  background:linear-gradient(145deg,#153c22,#0d2416);
+  box-shadow:0 10px 25px rgba(0,0,0,0.6);
+  border:1px solid rgba(158,255,109,0.2);
+  cursor:pointer;
+}
+
+.menu-item:active{
+  transform:scale(0.97);
+  background:#000;
+}
+
+.icon-box{
+  width:45px;
+  height:45px;
+  background:#1f4d2c;
+  border-radius:12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#9eff6d;
+  margin-right:15px;
+}
+
+.menu-text b{ color:#fff; }
+.menu-text span{ color:#9db8a7; }
+
+.bottom-nav{
+  height:60px;
+  background:#0f301b;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+}
+.nav.active{ color:#9eff6d; }
+
 </style>
 </head>
 
 <body>
 
+<!-- LOADING -->
 <div id="loading">
   <div id="text-container"></div>
   <div class="tagline">Rental Alat Berat Pertanian</div>
-  <div class="progress">
-    <div class="progress-bar"></div>
+  <div class="progress"><div class="progress-bar"></div></div>
+</div>
+
+<!-- MENU FULL -->
+<div class="app">
+
+  <div class="header">
+    <div class="brand">
+      <h1>Sumber Teknik</h1>
+      <span>Rental Alat Berat Pertanian</span>
+    </div>
+
+    <a href="dashboard.html" class="menu-trigger">
+      <div class="dot-grid">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+    </a>
   </div>
+
+  <div class="menu-area">
+
+    <div class="menu-item" onclick="window.location.href='laporan.html'">
+      <div class="icon-box">01</div>
+      <div class="menu-text">
+        <b>Laporan Pekerjaan</b>
+        <span>Input & monitoring harian</span>
+      </div>
+    </div>
+
+    <div class="menu-item" onclick="window.location.href='subpembayaran.html'">
+      <div class="icon-box">02</div>
+      <div class="menu-text">
+        <b>Pembayaran Petani</b>
+        <span>Kelola pembayaran</span>
+      </div>
+    </div>
+
+    <div class="menu-item" onclick="window.location.href='pengisian_solar.html'">
+      <div class="icon-box">03</div>
+      <div class="menu-text">
+        <b>Pengisian Solar</b>
+        <span>Tracking bahan bakar</span>
+      </div>
+    </div>
+
+    <div class="menu-item" onclick="window.location.href='REPAIR.html'">
+      <div class="icon-box">04</div>
+      <div class="menu-text">
+        <b>Repair Unit</b>
+        <span>Maintenance alat</span>
+      </div>
+    </div>
+
+    <div class="menu-item" onclick="window.location.href='gajih_operator.html'">
+      <div class="icon-box">05</div>
+      <div class="menu-text">
+        <b>Gajih Operator</b>
+        <span>Perhitungan & rekap</span>
+      </div>
+    </div>
+
+    <div class="menu-item" onclick="window.location.href='gajih_helper.html'">
+      <div class="icon-box">06</div>
+      <div class="menu-text">
+        <b>Gajih Helper</b>
+        <span>Perhitungan & Rekap</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav active">Dashboard</div>
+    <div class="nav">Data</div>
+    <div class="nav">Laporan</div>
+    <div class="nav">Setting</div>
+  </div>
+
 </div>
 
 <script>
-// ==================== KATA "Sumber Teknik" ====================
-const textContainer = document.getElementById('text-container');
-const text = "Sumber Teknik";
-const words = text.split(' ');
+// LOADING ANIMATION
+const container = document.getElementById('text-container');
+"Sumber Teknik".split(' ').forEach((word,w)=>{
+  const div=document.createElement('div');
+  div.className='word-box';
 
-words.forEach((word, wIndex)=>{
-  const wordDiv = document.createElement('div');
-  wordDiv.classList.add('word-box');
-
-  word.split('').forEach((char, index)=>{
-    const letterDiv = document.createElement('div');
-    letterDiv.classList.add('letter-box');
-    letterDiv.textContent = char;
-    wordDiv.appendChild(letterDiv);
+  word.split('').forEach((c,i)=>{
+    const el=document.createElement('div');
+    el.className='letter-box';
+    el.textContent=c;
+    div.appendChild(el);
 
     setTimeout(()=>{
-      letterDiv.style.animation = "bounce 0.6s forwards";
-    }, index*150 + wIndex*500);
+      el.style.animation="bounce 0.6s forwards";
+    }, i*120+w*400);
   });
 
-  textContainer.appendChild(wordDiv);
+  container.appendChild(div);
 });
 
-// ==================== SATU LOGIKA REDIRECT ====================
-const urlParams = new URLSearchParams(window.location.search);
-const isFromPWA = urlParams.get('source') === 'pwa' || 
-                  window.matchMedia('(display-mode: standalone)').matches;
-
-if (isFromPWA) {
-  window.location.replace('menu.html');
-} else {
+// HIDE LOADING
+setTimeout(()=>{
+  document.getElementById("loading").style.opacity="0";
   setTimeout(()=>{
-    document.getElementById("loading").style.opacity="0";
-    
-    setTimeout(()=>{
-      window.location.replace('menu.html');
-    },800);
-
-  },3500);
-}
+    document.getElementById("loading").style.display="none";
+  },800);
+},3500);
 </script>
-          
+
 </body>
 </html>
