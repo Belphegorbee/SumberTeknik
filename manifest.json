@@ -2,13 +2,23 @@
   "name": "SumberTeknik",
   "short_name": "SumberTeknik",
   "description": "Teknologi Pertanian & Alat Berat",
-  "start_url": "/menu.html",
+  "start_url": "/?source=pwa",        // ← Ini yang baru
   "display": "standalone",
-  "background_color": "#0f4c0f",     // Ganti dengan warna hijau tua / gradient kamu
+  "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
   "orientation": "portrait-primary",
   "icons": [
-    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
