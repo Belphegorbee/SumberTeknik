@@ -1,66 +1,68 @@
 const CACHE_NAME = 'sumberteknik-v1';
+
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/menu.html',
-  '/dashboard.html',
-  '/pembayaran.html',
-  '/subpembayaran.html',
-  '/laporan.html',
-  '/listtagihan.html',
-  '/gajih_operator.html',
-  '/pengisian_solar.html',
-  '/REPAIR.html',
-  '/background.png',
-  '/logo.png',
-  '/splashscreen.png'
+  'index.html',
+  'menu.html',
+  'dashboard.html',
+  'pembayaran.html',
+  'subpembayaran.html',
+  'laporan.html',
+  'listtagihan.html',
+  'gajih_operator.html',
+  'pengisian_solar.html',
+  'REPAIR.html',
+  'background.png',
+  'logo.png',
+  'splashscreen.png'
 ];
 
-// Install Service Worker
+// INSTALL
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Service Worker: Cache opened');
-        return cache.addAll(urlsToCache);
-      })
+      .then(cache => cache.addAll(urlsToCache))
   );
 });
 
+// FETCH
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
+
         if (response) return response;
 
-        return fetch(event.request).then(
-          networkResponse => {
-            // Cache response yang sukses untuk kunjungan berikutnya
-            if (networkResponse && networkResponse.status === 200) {
-              const responseClone = networkResponse.clone();
-              caches.open(CACHE_NAME).then(cache => {
-                cache.put(event.request, responseClone);
-              });
+        return fetch(event.request)
+          .then(networkResponse => {
+
+            if (!networkResponse || networkResponse.status !== 200) {
+              return networkResponse;
             }
+
+            const clone = networkResponse.clone();
+
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, clone);
+            });
+
             return networkResponse;
-          }
-        ).catch(() => {
-          // Kalau offline dan tidak ada di cache, bisa return offline page nanti
-          console.log('Offline & no cache for:', event.request.url);
-        });
+          })
+          .catch(() => {
+            return caches.match('index.html');
+          });
+
       })
   );
 });
 
-// Activate Service Worker
+// ACTIVATE
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
+    caches.keys().then(names => {
       return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Clearing old cache');
-            return caches.delete(cacheName);
+        names.map(name => {
+          if (name !== CACHE_NAME) {
+            return caches.delete(name);
           }
         })
       );
