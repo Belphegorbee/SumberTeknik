@@ -324,8 +324,8 @@ const container = document.getElementById('text-container');
     div.appendChild(el);
 
     setTimeout(()=>{
-  el.style.animation="bounce 0.35s forwards";
-}, i25 + w80);
+      el.style.animation="bounce 0.6s forwards";
+    }, i*120+w*400);
   });
 
   container.appendChild(div);
@@ -336,8 +336,8 @@ setTimeout(()=>{
   document.getElementById("loading").style.opacity="0";
   setTimeout(()=>{
     document.getElementById("loading").style.display="none";
-  },300);
-},1200);
+  },800);
+},3500);
 </script>
 
 <script>
