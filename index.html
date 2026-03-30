@@ -23,6 +23,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Loading Sumber Teknik</title>
+
 <style>
 html, body {
   margin:0;
@@ -130,6 +131,7 @@ html, body {
 }
 </style>
 </head>
+
 <body>
 
 <div id="loading">
@@ -146,7 +148,6 @@ const textContainer = document.getElementById('text-container');
 const text = "Sumber Teknik";
 const words = text.split(' ');
 
-// buat kata per baris
 words.forEach((word, wIndex)=>{
   const wordDiv = document.createElement('div');
   wordDiv.classList.add('word-box');
@@ -157,7 +158,6 @@ words.forEach((word, wIndex)=>{
     letterDiv.textContent = char;
     wordDiv.appendChild(letterDiv);
 
-    // animasi bounce per huruf
     setTimeout(()=>{
       letterDiv.style.animation = "bounce 0.6s forwards";
     }, index*150 + wIndex*500);
@@ -166,31 +166,23 @@ words.forEach((word, wIndex)=>{
   textContainer.appendChild(wordDiv);
 });
 
-// ==================== TRANSISI KE MENU ====================
-setTimeout(()=>{
-  document.getElementById("loading").style.opacity="0";
+// ==================== SATU LOGIKA REDIRECT ====================
+const urlParams = new URLSearchParams(window.location.search);
+const isFromPWA = urlParams.get('source') === 'pwa' || 
+                  window.matchMedia('(display-mode: standalone)').matches;
+
+if (isFromPWA) {
+  window.location.replace('menu.html');
+} else {
   setTimeout(()=>{
-    window.location.href="menu.html";
-  },800);
-},3500);
+    document.getElementById("loading").style.opacity="0";
+    
+    setTimeout(()=>{
+      window.location.replace('menu.html');
+    },800);
 
-</script>
-
-<script>
-  // Cek apakah dibuka dari PWA atau dari query parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  const isFromPWA = urlParams.get('source') === 'pwa' || 
-                    window.matchMedia('(display-mode: standalone)').matches;
-
-  if (isFromPWA) {
-    // Langsung redirect ke menu.html tanpa menunggu lama
-    window.location.replace('/menu.html');
-  } else {
-    // Untuk buka di browser biasa, tunggu animasi selesai
-    setTimeout(() => {
-      window.location.replace('/menu.html');
-    }, 3500);   // ← ubah sesuai durasi animasi kamu
-  }
+  },3500);
+}
 </script>
           
 </body>
