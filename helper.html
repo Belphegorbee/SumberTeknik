@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Helper - Sumber Teknik</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+user-select:none;
+-webkit-user-select:none;
+-webkit-touch-callout:none;
+}
+
+body{
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+padding-bottom:env(safe-area-inset-bottom);
+}
+
+.app{
+width:100%;
+max-width:430px;
+background:#f7fbf8;
+height:100vh;
+display:flex;
+flex-direction:column;
+box-shadow:0 0 40px rgba(0,0,0,0.25);
+}
+
+.header{
+padding:20px;
+background:linear-gradient(135deg,#0d5c2a,#1f8f45);
+color:white;
+display:flex;
+align-items:center;
+position:relative;
+}
+
+.back-btn{
+position:absolute;
+left:20px;
+top:50%;
+transform:translateY(-50%);
+font-size:24px;
+cursor:pointer;
+}
+
+.header-text{
+width:100%;
+text-align:center;
+}
+
+.header-text h1{
+font-size:1.1rem;
+font-weight:700;
+}
+
+.content{
+flex:1;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:16px;
+padding:18px;
+padding-bottom:calc(120px + env(safe-area-inset-bottom));
+}
+
+.form-card{
+background:white;
+border-radius:18px;
+padding:18px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+.input-container{
+position:relative;
+margin-bottom:16px;
+}
+
+.input-container input,
+.input-container select{
+width:100%;
+padding:14px 12px 14px 36px;
+border:1px solid #d9e6dd;
+border-radius:12px;
+font-size:0.95rem;
+background:white;
+}
+
+.input-container .material-icons{
+position:absolute;
+left:8px;
+top:50%;
+transform:translateY(-50%);
+color:#1f8f45;
+}
+
+.submit-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:12px;
+background:#1f8f45;
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+.table-container{
+overflow-y:auto;
+overflow-x:hidden;
+background:white;
+border-radius:12px;
+box-shadow:0 4px 15px rgba(0,0,0,0.08);
+max-height:350px;
+}
+
+.data-table{
+width:100%;
+border-collapse:collapse;
+font-size:0.85rem;
+table-layout:fixed;
+}
+
+.data-table th,
+.data-table td{
+padding:10px 6px;
+text-align:center;
+border-bottom:1px solid #e5e5e5;
+white-space:normal;
+word-wrap:break-word;
+}
+
+.data-table th{
+background:#1f8f45;
+color:white;
+position:sticky;
+top:0;
+z-index:2;
+}
+
+.data-table tr:nth-child(even){
+background:#f4f8f5;
+}
+
+#popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,0.4);
+justify-content:center;
+align-items:center;
+z-index:1000;
+opacity:0;
+transition:0.2s;
+}
+
+.popup-content{
+background:white;
+padding:18px 24px;
+border-radius:12px;
+text-align:center;
+font-weight:600;
+min-width:200px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+<span class="material-icons back-btn" onclick="goBack()">arrow_back</span>
+<div class="header-text">
+<h1>Data Helper</h1>
+</div>
+</div>
+
+<div class="content">
+
+<div class="form-card">
+
+<div class="input-container">
+<span class="material-icons">event</span>
+<input type="date" id="tanggalMulai">
+</div>
+
+<div class="input-container">
+<span class="material-icons">event</span>
+<input type="date" id="tanggalAkhir">
+</div>
+
+<div class="input-container">
+<span class="material-icons">person</span>
+<select id="namaHelper">
+<option value="">Pilih Helper</option>
+</select>
+</div>
+
+<button class="submit-btn" onclick="loadData()">Cari Data</button>
+
+</div>
+
+<div id="hasil"></div>
+
+</div>
+</div>
+
+<div id="popup">
+<div class="popup-content" id="popupText">Pesan</div>
+</div>
+
+<script>
+const API_URL="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+
+const helperSelect=document.getElementById("namaHelper");
+
+function showPopup(text){
+const popup=document.getElementById("popup");
+const popupText=document.getElementById("popupText");
+
+popupText.innerText=text;
+popup.style.display="flex";
+setTimeout(()=>popup.style.opacity="1",10);
+
+setTimeout(()=>{
+popup.style.opacity="0";
+setTimeout(()=>popup.style.display="none",200);
+},1500);
+}
+
+function goBack(){
+window.location.href="index.html";
+}
+
+// load helper list dari API
+fetch(`${API_URL}?action=getHelpers`)
+.then(res=>res.json())
+.then(data=>{
+if(data.helpers){
+data.helpers.forEach(h=>{
+let opt=document.createElement("option");
+opt.value=h;
+opt.text=h;
+helperSelect.appendChild(opt);
+});
+}
+});
+
+function loadData(){
+const mulai=document.getElementById("tanggalMulai").value;
+const akhir=document.getElementById("tanggalAkhir").value;
+const helper=helperSelect.value;
+
+if(!mulai || !akhir || !helper){
+showPopup("Lengkapi filter dulu");
+return;
+}
+
+fetch(`${API_URL}?action=getHelperData&tanggalMulai=${mulai}&tanggalAkhir=${akhir}&namaHelper=${helper}`)
+.then(res=>res.json())
+.then(response=>{
+const data=response.data || [];
+const hasil=document.getElementById("hasil");
+
+hasil.innerHTML="";
+
+if(data.length===0){
+hasil.innerHTML="<p style='text-align:center'>Tidak ada data</p>";
+return;
+}
+
+showPopup("Data ditemukan");
+
+let table = `
+<div class="table-container">
+<table class="data-table">
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Karung</th>
+<th>Base Upah</th>
+<th>Total Harian</th>
+</tr>
+</thead>
+<tbody>
+`;
+
+data.forEach(row=>{
+table += `
+<tr>
+<td>${row.tanggal}</td>
+<td>${row.jumlahKarungan}</td>
+<td>${row.baseUpah}</td>
+<td>${row.totalHarian}</td>
+</tr>
+`;
+});
+
+table += `</tbody></table></div>`;
+hasil.innerHTML = table;
+});
+
+// anti copy
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("selectstart", e => e.preventDefault());
+}
+</script>
+
+</body>
+</html>
