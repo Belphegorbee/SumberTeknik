@@ -1,0 +1,344 @@
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Peminjaman Operator</title>  
+  
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">  
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  
+  
+<style>  
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}  
+body{  
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);  
+display:flex;justify-content:center;align-items:center;height:100vh;  
+}  
+.app{  
+width:100%;max-width:430px;background:#f7fbf8;height:100vh;  
+display:flex;flex-direction:column;  
+}  
+  
+/* HEADER */  
+.header{  
+  padding:20px;  
+  background:linear-gradient(135deg,#0d5c2a,#1f8f45);  
+  color:white;  
+  display:flex;  
+  align-items:center;  
+  gap:12px;  
+  position:sticky;  
+  top:0;  
+  z-index:10;  
+}  
+  
+.back-btn{  
+  cursor:pointer;  
+  font-size:24px;  
+}  
+  
+.header-text h1{  
+  font-size:1.1rem;  
+  font-weight:700;  
+}  
+  
+.content{  
+flex:1;  
+padding:18px;  
+display:flex;  
+flex-direction:column;  
+gap:16px;  
+}  
+  
+.form-card{  
+background:white;  
+border-radius:18px;  
+padding:18px;  
+}  
+  
+/* INPUT */  
+.input-container{  
+position:relative;  
+margin-bottom:16px;  
+}  
+  
+.input-container input,  
+.input-container select{  
+width:100%;  
+padding:14px 12px 14px 44px;  
+border:1px solid #d9e6dd;  
+border-radius:12px;  
+}  
+  
+.input-container label{  
+position:absolute;  
+left:44px;  
+top:14px;  
+font-size:0.85rem;  
+transition:0.2s;  
+}  
+  
+.input-container input:focus + label,  
+.input-container input:not(:placeholder-shown) + label,  
+.input-container select:focus + label,  
+.input-container select:not([value=""]) + label{  
+top:-8px;  
+left:12px;  
+font-size:0.7rem;  
+color:#1f8f45;  
+background:white;  
+padding:0 4px;  
+}  
+  
+.material-icons{  
+position:absolute;  
+left:12px;  
+top:50%;  
+transform:translateY(-50%);  
+color:#1f8f45;  
+}  
+  
+/* BUTTON */  
+.submit-btn{  
+width:100%;  
+padding:12px;  
+border:none;  
+border-radius:12px;  
+background:#1f8f45;  
+color:white;  
+font-weight:600;  
+cursor:pointer;  
+}  
+  
+#popup{  
+display:none;  
+position:fixed;  
+top:0;left:0;right:0;bottom:0;  
+background:rgba(0,0,0,0.5);  
+justify-content:center;  
+align-items:center;  
+}  
+  
+.popup-content{  
+background:white;  
+padding:20px;  
+border-radius:12px;  
+}  
+
+/* LOADING BUTTON */
+.submit-btn.loading{
+opacity:0.7;
+pointer-events:none;
+position:relative;
+}
+
+.submit-btn.loading::after{
+content:"";
+width:18px;
+height:18px;
+border:3px solid white;
+border-top:3px solid transparent;
+border-radius:50%;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+animation:spin 0.8s linear infinite;
+}
+
+@keyframes spin{
+to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
+/* POPUP UPGRADE */
+#popup{
+display:none;
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+opacity:0;
+transition:opacity 0.25s ease;
+}
+
+.popup-content{
+background:white;
+padding:22px 24px;
+border-radius:14px;
+text-align:center;
+min-width:220px;
+transform:scale(0.8);
+transition:transform 0.25s ease;
+}
+
+.popup-content button{
+margin-top:16px;
+padding:8px 16px;
+border:none;
+border-radius:8px;
+background:#1f8f45;
+color:white;
+cursor:pointer;
+}
+
+</style>  
+</head>  
+  
+<body>  
+  
+<div class="app">  
+  
+<div class="header">  
+  <span class="material-icons back-btn" onclick="goBack()">arrow_back</span>  
+  <div class="header-text">  
+    <h1>Peminjaman & Pembayaran</h1>  
+  </div>  
+</div>  
+  
+<div class="content">  
+<div class="form-card">  
+  
+<!-- KOLOM 1 -->  
+<div class="input-container">  
+<span class="material-icons">swap_horiz</span>  
+<select id="jenis">  
+<option value="">Pilih Aksi</option>  
+<option value="peminjaman">Peminjaman</option>  
+<option value="pembayaran">Pembayaran</option>  
+</select>  
+<label>Jenis Transaksi</label>  
+</div>  
+  
+<!-- KOLOM 2 -->  
+<div class="input-container">  
+<span class="material-icons">person</span>  
+<select id="namaOperator">  
+<option value="">Loading...</option>  
+</select>  
+<label>Nama Operator</label>  
+</div>  
+  
+<!-- KOLOM 3 -->  
+<div class="input-container">  
+<span class="material-icons">attach_money</span>  
+<input type="number" id="jumlah" placeholder=" ">  
+<label>Nominal</label>  
+</div>  
+  
+<button class="submit-btn" onclick="submitForm()">Simpan</button>  
+  
+</div>  
+</div>  
+</div>  
+  
+<div id="popup">  
+<div class="popup-content">  
+<p id="popupMsg"></p>  
+<button onclick="closePopup()">Tutup</button>  
+</div>  
+</div>  
+  
+<script>  
+  
+const API_URL="https://script.google.com/macros/s/AKfycbxfPuJmalnJcxoLCfgvERkKMlPX1j2e5PEPn_zgpxDj9aszo8g9tp1UtCqPei_5AQgv/exec";  
+  
+function goBack(){  
+window.location.href="subpembayaran.html";  
+}  
+  
+// LOAD OPERATOR  
+fetch(API_URL+"?action=getNamaOperator")  
+.then(res=>res.json())  
+.then(data=>{  
+let select=document.getElementById("namaOperator");  
+select.innerHTML='<option value="">Pilih Operator</option>';  
+data.operator.forEach(n=>{  
+let opt=document.createElement("option");  
+opt.value=n;  
+opt.text=n;  
+select.appendChild(opt);  
+});  
+});  
+  
+// POPUP  
+function showPopup(msg){
+let popup=document.getElementById("popup");
+let content=document.querySelector(".popup-content");
+
+document.getElementById("popupMsg").innerText=msg;
+popup.style.display="flex";
+
+setTimeout(()=>{
+popup.style.opacity="1";
+content.style.transform="scale(1)";
+},10);
+}
+
+function closePopup(){
+let popup=document.getElementById("popup");
+let content=document.querySelector(".popup-content");
+
+popup.style.opacity="0";
+content.style.transform="scale(0.8)";
+
+setTimeout(()=>{
+popup.style.display="none";
+},200);
+}
+  
+// SUBMIT  
+let isSubmitting = false;
+
+function submitForm(){
+
+if(isSubmitting) return;
+
+let jenis=document.getElementById("jenis").value;
+let nama=document.getElementById("namaOperator").value;
+let jumlah=document.getElementById("jumlah").value;
+
+if(!jenis || !nama || !jumlah){
+showPopup("Lengkapi semua data");
+return;
+}
+
+isSubmitting = true;
+
+const btn = document.querySelector(".submit-btn");
+btn.classList.add("loading");
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"operatorTransaksi",
+jenis:jenis,
+namaOperator:nama,
+jumlah:jumlah
+})
+})
+.then(res=>res.json())
+.then(resp=>{
+
+isSubmitting = false;
+btn.classList.remove("loading");
+
+if(resp.status==="success"){
+showPopup("Berhasil disimpan");
+document.getElementById("jumlah").value="";
+}else{
+showPopup(resp.message || "Gagal");
+}
+
+})
+.catch(()=>{
+isSubmitting = false;
+btn.classList.remove("loading");
+showPopup("Error koneksi");
+});
+}
+  
+</script>  
+  
+</body>  
+</html>
