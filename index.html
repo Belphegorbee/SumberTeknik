@@ -22,7 +22,7 @@
       height: 100%;
       min-height: 100dvh;
       overflow: hidden;
-      background: #0a2a1a; /* warna dasar gelap */
+      background: #0a2a1a;
     }
 
     body {
@@ -32,7 +32,6 @@
       align-items: center;
     }
 
-    /* ================= APP CONTAINER ================= */
     .app {
       width: 100%;
       max-width: 430px;
@@ -43,7 +42,7 @@
       overflow: hidden;
     }
 
-    /* HEADER - tetap gelap */
+    /* HEADER */
     .header {
       padding: 20px 20px;
       background: #0f301b;
@@ -88,10 +87,9 @@
       height: 6px;
       background: #9eff6d;
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(158,255,109,0.9);
     }
 
-    /* ================= MENU AREA - BACKGROUND GAMBAR DI SINI ================= */
+    /* ================= MENU AREA - BACKGROUND LOGO DI TENGAH ================= */
     .menu-area {
       flex: 1;
       padding: 20px 16px;
@@ -100,49 +98,48 @@
       gap: 14px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      position: relative;
       
-      /* Background gambar hanya di area menu */
+      /* Background gambar kecil di tengah seperti logo */
       background-image: url('background.png');
       background-position: center center;
-      background-size: cover;
       background-repeat: no-repeat;
-      
-      /* Overlay gelap agar teks tetap jelas */
-      position: relative;
+      background-size: 65%;           /* ubah ukuran di sini (60% - 80%) */
+      opacity: 0.85;
     }
 
-    /* Overlay gelap di atas background gambar */
+    /* Overlay gelap di seluruh menu area */
     .menu-area::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(7, 20, 12, 0.75); /* atur opacity di sini */
+      background: rgba(7, 20, 12, 0.78);   /* atur kegelapan di sini */
       z-index: 1;
     }
 
-    /* Konten menu di atas overlay */
+    /* Konten menu di atas background */
     .menu-area > * {
       position: relative;
       z-index: 2;
     }
 
-    /* MENU CARD - transparan agar background terlihat */
+    /* MENU CARD */
     .menu-item {
       display: flex;
       align-items: center;
       padding: 16px 18px;
       border-radius: 20px;
-      background: rgba(21, 60, 34, 0.45);   /* transparan */
+      background: rgba(21, 60, 34, 0.55);
       border: 1px solid rgba(158, 255, 109, 0.35);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
     .menu-item:active {
       transform: scale(0.96);
-      background: rgba(21, 60, 34, 0.65);
+      background: rgba(21, 60, 34, 0.70);
     }
 
     .icon-box {
