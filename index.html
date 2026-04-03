@@ -8,7 +8,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Sumber Teknik</title>
-
 <style>
 *{
   margin:0;
@@ -104,7 +103,8 @@
 
 body{
   height:100vh;
-  background:#0b1f12;
+  /* Background hijau muda + gambar */
+  background: #a8d5a0 url('background.png') center/cover no-repeat;
   font-family:'Segoe UI',sans-serif;
   display:flex;
   justify-content:center;
@@ -116,7 +116,8 @@ body{
   width:100%;
   max-width:430px;
   height:100vh;
-  background:linear-gradient(180deg,#102a18,#07140c);
+  /* Background app tetap gelap agar kontras bagus, atau bisa dihilangkan jika mau full background.png */
+  background: linear-gradient(180deg, rgba(16,42,24,0.85), rgba(7,20,12,0.9));
   display:flex;
   flex-direction:column;
 }
@@ -179,21 +180,23 @@ body{
   overflow-y:auto;
 }
 
-/* MENU ITEM */
+/* MENU ITEM - DIBUAT TRANSPARENT */
 .menu-item{
   display:flex;
   align-items:center;
   padding:16px;
   border-radius:18px;
-  background:linear-gradient(145deg,#153c22,#0d2416);
-  box-shadow:0 10px 25px rgba(0,0,0,0.6);
-  border:1px solid rgba(158,255,109,0.2);
+  /* Background transparan dengan sedikit hijau gelap */
+  background: rgba(21, 60, 34, 0.65);
+  box-shadow:0 10px 25px rgba(0,0,0,0.5);
+  border:1px solid rgba(158,255,109,0.3);
   cursor:pointer;
+  backdrop-filter: blur(8px); /* efek blur cantik (opsional, support bagus di mobile) */
 }
 
 .menu-item:active{
   transform:scale(0.97);
-  background:#000;
+  background: rgba(0,0,0,0.6);
 }
 
 /* ICON */
@@ -226,7 +229,6 @@ body{
   color:#9db8a7;
   font-size:0.75rem;
 }
-
 </style>
 </head>
 
