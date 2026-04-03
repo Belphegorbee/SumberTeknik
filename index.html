@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <!-- Viewport yang lebih baik untuk mobile & PWA -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
   <title>Sumber Teknik</title>
@@ -19,22 +18,37 @@
       user-select: none;
     }
 
-    /* ================= FULL BACKGROUND ================= */
+    /* ================= BACKGROUND UTAMA ================= */
     html, body {
       height: 100%;
-      min-height: 100dvh;           /* dynamic viewport height (paling stabil di mobile) */
+      min-height: 100dvh;           /* dynamic viewport */
+      min-height: 100svh;           /* small viewport (lebih aman di beberapa browser) */
       overflow: hidden;
     }
 
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #a8d5a0 url('/background.png') center center / cover no-repeat;
-      background-attachment: scroll;   /* lebih aman di Safari iOS */
+      /* Fallback warna hijau + background image */
+      background-color: #a8d5a0;
+      background-image: url('/background.png');
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: scroll;   /* penting untuk mobile */
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 0;
       padding: 0;
+    }
+
+    /* Media query khusus mobile - paksa ulang background */
+    @media (max-width: 480px) {
+      body {
+        background-image: url('/background.png') !important;
+        background-size: cover !important;
+        background-position: center center !important;
+      }
     }
 
     /* ================= LOADING ================= */
@@ -108,19 +122,15 @@
       animation: loadBar 3s forwards;
     }
 
-    @keyframes loadBar {
-      to { width: 100%; }
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+    @keyframes loadBar { to { width: 100%; } }
+    @keyframes fadeIn { to { opacity: 1; } }
 
     /* ================= APP CONTAINER ================= */
     .app {
       width: 100%;
       max-width: 430px;
-      height: 100dvh;                    /* pakai dvh agar pas dengan dynamic height */
+      min-height: 100dvh;
+      min-height: 100svh;
       background: linear-gradient(180deg, rgba(16,42,24,0.85), rgba(7,20,12,0.9));
       display: flex;
       flex-direction: column;
@@ -153,7 +163,6 @@
       display: block;
     }
 
-    /* MENU BUTTON */
     .menu-trigger {
       width: 32px;
       height: 32px;
@@ -189,7 +198,6 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* MENU ITEM */
     .menu-item {
       display: flex;
       align-items: center;
@@ -261,7 +269,7 @@
     </div>
 
     <div class="menu-area">
-
+      <!-- Menu items kamu tetap sama -->
       <div class="menu-item" onclick="window.location.href='laporan.html'">
         <div class="icon-box">01</div>
         <div class="menu-text">
@@ -309,13 +317,12 @@
           <span>Perhitungan & Rekap</span>
         </div>
       </div>
-
     </div>
 
   </div>
 
   <script>
-    // LOADING ANIMATION
+    // LOADING ANIMATION (tetap sama)
     const container = document.getElementById('text-container');
     "Sumber Teknik".split(' ').forEach((word, w) => {
       const div = document.createElement('div');
@@ -335,12 +342,10 @@
       container.appendChild(div);
     });
 
-    // Hide loading
     setTimeout(() => {
-      document.getElementById("loading").style.opacity = "0";
-      setTimeout(() => {
-        document.getElementById("loading").style.display = "none";
-      }, 800);
+      const loading = document.getElementById("loading");
+      loading.style.opacity = "0";
+      setTimeout(() => { loading.style.display = "none"; }, 800);
     }, 3500);
   </script>
 
