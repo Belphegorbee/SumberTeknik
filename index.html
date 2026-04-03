@@ -1,352 +1,354 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+  <meta charset="UTF-8">
+  <!-- Viewport yang lebih baik untuk mobile & PWA -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <title>Sumber Teknik</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a1a1a">
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1a1a1a">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Sumber Teknik</title>
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  -webkit-user-select:none;
-  user-select:none;
-}
+    /* ================= FULL BACKGROUND ================= */
+    html, body {
+      height: 100%;
+      min-height: 100dvh;           /* dynamic viewport height (paling stabil di mobile) */
+      overflow: hidden;
+    }
 
-/* ================= LOADING ================= */
-#loading {
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 40%),
-    linear-gradient(135deg,#0f4c00,#072e00);
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-  transition:opacity 0.8s ease;
-}
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #a8d5a0 url('/background.png') center center / cover no-repeat;
+      background-attachment: scroll;   /* lebih aman di Safari iOS */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
 
-.word-box {
-  display:flex;
-  gap:8px;
-  margin-bottom:25px;
-}
+    /* ================= LOADING ================= */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 40%),
+        linear-gradient(135deg, #0f4c00, #072e00);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease;
+    }
 
-.letter-box {
-  width:50px;
-  height:50px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:#000;
-  color:#fff;
-  border:2px solid #9eff6d;
-  border-radius:14px;
-  font-weight:bold;
-  font-size:5vw;
-  opacity:0;
-  transform: translateY(-50px);
-  box-shadow:0 0 15px rgba(158,255,109,0.4);
-}
+    .word-box {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 25px;
+    }
 
-@keyframes bounce {
-  0% { transform: translateY(-50px); opacity:0; }
-  50% { transform: translateY(0); opacity:1; }
-  70% { transform: translateY(-10px); }
-  100% { transform: translateY(0); opacity:1; }
-}
+    .letter-box {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      color: #fff;
+      border: 2px solid #9eff6d;
+      border-radius: 14px;
+      font-weight: bold;
+      font-size: 5vw;
+      opacity: 0;
+      transform: translateY(-50px);
+      box-shadow: 0 0 15px rgba(158,255,109,0.4);
+    }
 
-.tagline{
-  margin-top:10px;
-  font-size:0.8rem;
-  color:#c8ffd8;
-  letter-spacing:1px;
-  opacity:0;
-  animation:fadeIn 1.5s forwards;
-  animation-delay:1.5s;
-}
+    @keyframes bounce {
+      0%   { transform: translateY(-50px); opacity: 0; }
+      50%  { transform: translateY(0); opacity: 1; }
+      70%  { transform: translateY(-10px); }
+      100% { transform: translateY(0); opacity: 1; }
+    }
 
-.progress{
-  width:120px;
-  height:3px;
-  background:rgba(255,255,255,0.2);
-  border-radius:10px;
-  margin-top:25px;
-  overflow:hidden;
-}
+    .tagline {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #c8ffd8;
+      letter-spacing: 1px;
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+      animation-delay: 1.5s;
+    }
 
-.progress-bar{
-  height:100%;
-  width:0%;
-  background:#9eff6d;
-  animation:loadBar 3s forwards;
-}
+    .progress {
+      width: 120px;
+      height: 3px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      margin-top: 25px;
+      overflow: hidden;
+    }
 
-@keyframes loadBar{
-  to{width:100%;}
-}
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #9eff6d;
+      animation: loadBar 3s forwards;
+    }
 
-@keyframes fadeIn{
-  to{opacity:1;}
-}
+    @keyframes loadBar {
+      to { width: 100%; }
+    }
 
-/* ================= MENU ================= */
-.menu-item, .menu-trigger {
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-}
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
 
-body{
-  height:100vh;
-  /* Background hijau muda + gambar */
-  background: #a8d5a0 url('/background.png') center/cover no-repeat;
-  font-family:'Segoe UI',sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-}
+    /* ================= APP CONTAINER ================= */
+    .app {
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;                    /* pakai dvh agar pas dengan dynamic height */
+      background: linear-gradient(180deg, rgba(16,42,24,0.85), rgba(7,20,12,0.9));
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
 
-.app{
-  width:100%;
-  max-width:430px;
-  height:100vh;
-  /* Background app tetap gelap agar kontras bagus, atau bisa dihilangkan jika mau full background.png */
-  background: linear-gradient(180deg, rgba(16,42,24,0.85), rgba(7,20,12,0.9));
-  display:flex;
-  flex-direction:column;
-}
+    /* HEADER */
+    .header {
+      padding: 18px 20px;
+      background: #0f301b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      z-index: 10;
+    }
 
-/* HEADER */
-.header{
-  padding:18px 20px;
-  background:#0f301b;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 4px 15px rgba(0,0,0,0.6);
-}
+    .brand h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #9eff6d;
+      letter-spacing: 1px;
+    }
 
-.brand h1{
-  font-size:1.1rem;
-  font-weight:700;
-  color:#9eff6d;
-  letter-spacing:1px;
-}
+    .brand span {
+      font-size: 0.7rem;
+      color: #b7d8c2;
+      margin-top: 3px;
+      display: block;
+    }
 
-.brand span{
-  font-size:0.7rem;
-  color:#b7d8c2;
-  margin-top:3px;
-  display:block;
-}
+    /* MENU BUTTON */
+    .menu-trigger {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
 
-/* MENU BUTTON */
-.menu-trigger{
-  width:32px;
-  height:32px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
+    .dot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 6px);
+      grid-template-rows: repeat(2, 6px);
+      gap: 6px;
+    }
 
-.dot-grid{
-  display:grid;
-  grid-template-columns:repeat(3,6px);
-  grid-template-rows:repeat(2,6px);
-  gap:6px;
-}
+    .dot-grid span {
+      width: 6px;
+      height: 6px;
+      background: #9eff6d;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(158,255,109,0.8);
+    }
 
-.dot-grid span{
-  width:6px;
-  height:6px;
-  background:#9eff6d;
-  border-radius:50%;
-  box-shadow:0 0 8px rgba(158,255,109,0.8);
-}
+    /* MENU AREA */
+    .menu-area {
+      flex: 1;
+      padding: 18px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
-/* MENU AREA */
-.menu-area{
-  flex:1;
-  padding:18px 15px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  overflow-y:auto;
-}
+    /* MENU ITEM */
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(21, 60, 34, 0.65);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      border: 1px solid rgba(158,255,109,0.3);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
 
-/* MENU ITEM - DIBUAT TRANSPARENT */
-.menu-item{
-  display:flex;
-  align-items:center;
-  padding:16px;
-  border-radius:18px;
-  /* Background transparan dengan sedikit hijau gelap */
-  background: rgba(21, 60, 34, 0.65);
-  box-shadow:0 10px 25px rgba(0,0,0,0.5);
-  border:1px solid rgba(158,255,109,0.3);
-  cursor:pointer;
-  backdrop-filter: blur(8px); /* efek blur cantik (opsional, support bagus di mobile) */
-}
+    .menu-item:active {
+      transform: scale(0.97);
+      background: rgba(0,0,0,0.6);
+    }
 
-.menu-item:active{
-  transform:scale(0.97);
-  background: rgba(0,0,0,0.6);
-}
+    .icon-box {
+      width: 45px;
+      height: 45px;
+      background: #1f4d2c;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #9eff6d;
+      margin-right: 15px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
 
-/* ICON */
-.icon-box{
-  width:45px;
-  height:45px;
-  background:#1f4d2c;
-  border-radius:12px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#9eff6d;
-  margin-right:15px;
-  font-weight:600;
-}
+    .menu-text b {
+      color: #ffffff;
+      font-size: 0.95rem;
+    }
 
-/* TEXT */
-.menu-text{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-
-.menu-text b{
-  color:#ffffff;
-  font-size:0.95rem;
-}
-
-.menu-text span{
-  color:#9db8a7;
-  font-size:0.75rem;
-}
-</style>
+    .menu-text span {
+      color: #9db8a7;
+      font-size: 0.75rem;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- LOADING -->
-<div id="loading">
-  <div id="text-container"></div>
-  <div class="tagline">Rental Alat Berat Pertanian</div>
-  <div class="progress"><div class="progress-bar"></div></div>
-</div>
-
-<!-- MENU -->
-<div class="app">
-
-  <div class="header">
-    <div class="brand">
-      <h1>Sumber Teknik</h1>
-      <span>Rental Alat Berat Pertanian</span>
-    </div>
-
-    <a href="dashboard.html" class="menu-trigger">
-      <div class="dot-grid">
-        <span></span><span></span><span></span>
-        <span></span><span></span><span></span>
-      </div>
-    </a>
+  <!-- LOADING -->
+  <div id="loading">
+    <div id="text-container"></div>
+    <div class="tagline">Rental Alat Berat Pertanian</div>
+    <div class="progress"><div class="progress-bar"></div></div>
   </div>
 
-  <div class="menu-area">
+  <!-- MAIN APP -->
+  <div class="app">
 
-    <div class="menu-item" onclick="window.location.href='laporan.html'">
-      <div class="icon-box">01</div>
-      <div class="menu-text">
-        <b>Laporan Pekerjaan</b>
-        <span>Input & monitoring harian</span>
+    <div class="header">
+      <div class="brand">
+        <h1>Sumber Teknik</h1>
+        <span>Rental Alat Berat Pertanian</span>
       </div>
+
+      <a href="dashboard.html" class="menu-trigger">
+        <div class="dot-grid">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+      </a>
     </div>
 
-    <div class="menu-item" onclick="window.location.href='subpembayaran.html'">
-      <div class="icon-box">02</div>
-      <div class="menu-text">
-        <b>Pembayaran Petani</b>
-        <span>Kelola pembayaran</span>
-      </div>
-    </div>
+    <div class="menu-area">
 
-    <div class="menu-item" onclick="window.location.href='pengisian_solar.html'">
-      <div class="icon-box">03</div>
-      <div class="menu-text">
-        <b>Pengisian Solar</b>
-        <span>Tracking bahan bakar</span>
+      <div class="menu-item" onclick="window.location.href='laporan.html'">
+        <div class="icon-box">01</div>
+        <div class="menu-text">
+          <b>Laporan Pekerjaan</b>
+          <span>Input & monitoring harian</span>
+        </div>
       </div>
-    </div>
 
-    <div class="menu-item" onclick="window.location.href='REPAIR.html'">
-      <div class="icon-box">04</div>
-      <div class="menu-text">
-        <b>Repair Unit</b>
-        <span>Maintenance alat</span>
+      <div class="menu-item" onclick="window.location.href='subpembayaran.html'">
+        <div class="icon-box">02</div>
+        <div class="menu-text">
+          <b>Pembayaran Petani</b>
+          <span>Kelola pembayaran</span>
+        </div>
       </div>
-    </div>
 
-    <div class="menu-item" onclick="window.location.href='gajih_operator.html'">
-      <div class="icon-box">05</div>
-      <div class="menu-text">
-        <b>Gajih Operator</b>
-        <span>Perhitungan & rekap</span>
+      <div class="menu-item" onclick="window.location.href='pengisian_solar.html'">
+        <div class="icon-box">03</div>
+        <div class="menu-text">
+          <b>Pengisian Solar</b>
+          <span>Tracking bahan bakar</span>
+        </div>
       </div>
-    </div>
 
-    <div class="menu-item" onclick="window.location.href='helper.html'">
-      <div class="icon-box">06</div>
-      <div class="menu-text">
-        <b>Gajih Helper</b>
-        <span>Perhitungan & Rekap</span>
+      <div class="menu-item" onclick="window.location.href='REPAIR.html'">
+        <div class="icon-box">04</div>
+        <div class="menu-text">
+          <b>Repair Unit</b>
+          <span>Maintenance alat</span>
+        </div>
       </div>
+
+      <div class="menu-item" onclick="window.location.href='gajih_operator.html'">
+        <div class="icon-box">05</div>
+        <div class="menu-text">
+          <b>Gajih Operator</b>
+          <span>Perhitungan & rekap</span>
+        </div>
+      </div>
+
+      <div class="menu-item" onclick="window.location.href='helper.html'">
+        <div class="icon-box">06</div>
+        <div class="menu-text">
+          <b>Gajih Helper</b>
+          <span>Perhitungan & Rekap</span>
+        </div>
+      </div>
+
     </div>
 
   </div>
 
-</div>
+  <script>
+    // LOADING ANIMATION
+    const container = document.getElementById('text-container');
+    "Sumber Teknik".split(' ').forEach((word, w) => {
+      const div = document.createElement('div');
+      div.className = 'word-box';
 
-<script>
-// LOADING ANIMATION
-const container = document.getElementById('text-container');
-"Sumber Teknik".split(' ').forEach((word,w)=>{
-  const div=document.createElement('div');
-  div.className='word-box';
+      word.split('').forEach((c, i) => {
+        const el = document.createElement('div');
+        el.className = 'letter-box';
+        el.textContent = c;
+        div.appendChild(el);
 
-  word.split('').forEach((c,i)=>{
-    const el=document.createElement('div');
-    el.className='letter-box';
-    el.textContent=c;
-    div.appendChild(el);
+        setTimeout(() => {
+          el.style.animation = "bounce 0.6s forwards";
+        }, i * 120 + w * 400);
+      });
 
-    setTimeout(()=>{
-      el.style.animation="bounce 0.6s forwards";
-    }, i*120+w*400);
-  });
+      container.appendChild(div);
+    });
 
-  container.appendChild(div);
-});
+    // Hide loading
+    setTimeout(() => {
+      document.getElementById("loading").style.opacity = "0";
+      setTimeout(() => {
+        document.getElementById("loading").style.display = "none";
+      }, 800);
+    }, 3500);
+  </script>
 
-// HIDE LOADING
-setTimeout(()=>{
-  document.getElementById("loading").style.opacity="0";
-  setTimeout(()=>{
-    document.getElementById("loading").style.display="none";
-  },800);
-},3500);
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js');
-}
-</script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  </script>
 
 </body>
 </html>
