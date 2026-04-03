@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -264,7 +263,6 @@ min-width:200px;
 </select>
 </div>
 
-<!-- 🔐 SANDI -->
 <div class="password-wrapper">
 <input type="password" id="sandiOperator" placeholder="Sandi Operator">
 <span class="material-icons left-icon">lock</span>
@@ -374,6 +372,9 @@ return;
 
 showPopup("Data ditemukan");
 
+let totalPendapatan = 0;
+let totalPinjaman = 0;
+
 let table = `
 <div class="table-container">
 <table class="data-table">
@@ -390,21 +391,38 @@ let table = `
 `;
 
 data.forEach(row=>{
+  let pendapatan = Number(row.totalPendapatan) || 0;
+  let pinjam = Number(row.pinjaman) || 0;
+
+  totalPendapatan += pendapatan;
+  totalPinjaman += pinjam;
+
+  table += `
+  <tr>
+    <td>${row.tanggal}</td>
+    <td>${row.jumlahKarungan}</td>
+    <td>${row.hargaPerKarung}</td>
+    <td>${pendapatan}</td>
+    <td>${row.pinjaman || "-"}</td>
+  </tr>
+  `;
+});
+
+// baris total
 table += `
-<tr>
-<td>${row.tanggal}</td>
-<td>${row.jumlahKarungan}</td>
-<td>${row.hargaPerKarung}</td>
-<td>${row.totalPendapatan}</td>
-<td>${row.pinjaman || "-"}</td>
+<tr style="font-weight:bold; background:#e0f2e9;">
+<td colspan="3" style="text-align:right">TOTAL</td>
+<td>${totalPendapatan}</td>
+<td>${totalPinjaman}</td>
+</tr>
+<tr style="font-weight:bold; background:#d1ead7;">
+<td colspan="4" style="text-align:right">TOTAL BERSIH (Pendapatan - Pinjaman)</td>
+<td>${totalPendapatan - totalPinjaman}</td>
 </tr>
 `;
-});
 
 table += `</tbody></table></div>`;
 hasil.innerHTML = table;
-
-});
 
 }
 
