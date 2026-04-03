@@ -43,19 +43,19 @@
       align-items: center;
       transition: opacity 0.8s ease;
       
-      /* Background pakai background.png */
+      /* Background dengan logo yang full termuat */
       background-image: url('background.png');
       background-position: center center;
-      background-size: cover;
       background-repeat: no-repeat;
+      background-size: contain;        /* ← Ini yang penting agar logo tidak terpotong */
     }
 
-    /* Overlay gelap di loading agar teks jelas */
+    /* Overlay gelap untuk loading */
     #loading::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(15, 48, 27, 0.85), rgba(7, 20, 12, 0.90));
+      background: linear-gradient(135deg, rgba(15, 48, 27, 0.82), rgba(7, 20, 12, 0.88));
       z-index: 1;
     }
 
@@ -67,12 +67,12 @@
     .word-box {
       display: flex;
       gap: 8px;
-      margin-bottom: 25px;
+      margin-bottom: 28px;
     }
 
     .letter-box {
-      width: 50px;
-      height: 50px;
+      width: 52px;
+      height: 52px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -81,7 +81,7 @@
       border: 2px solid #9eff6d;
       border-radius: 14px;
       font-weight: bold;
-      font-size: 5.5vw;
+      font-size: 5.8vw;
       opacity: 0;
       transform: translateY(-50px);
       box-shadow: 0 0 15px rgba(158,255,109,0.4);
@@ -95,8 +95,8 @@
     }
 
     .tagline {
-      margin-top: 10px;
-      font-size: 0.85rem;
+      margin-top: 12px;
+      font-size: 0.88rem;
       color: #c8ffd8;
       letter-spacing: 1.5px;
       opacity: 0;
@@ -105,11 +105,11 @@
     }
 
     .progress {
-      width: 130px;
+      width: 140px;
       height: 4px;
       background: rgba(255,255,255,0.25);
       border-radius: 10px;
-      margin-top: 30px;
+      margin-top: 35px;
       overflow: hidden;
     }
 
@@ -117,7 +117,7 @@
       height: 100%;
       width: 0%;
       background: #9eff6d;
-      animation: loadBar 3s forwards;
+      animation: loadBar 3.2s forwards;
     }
 
     @keyframes loadBar { to { width: 100%; } }
@@ -181,7 +181,7 @@
       border-radius: 50%;
     }
 
-    /* ================= MENU AREA - BACKGROUND KECIL DI TENGAH ================= */
+    /* ================= MENU AREA - LOGO KECIL DI TENGAH ================= */
     .menu-area {
       flex: 1;
       padding: 20px 16px;
@@ -195,14 +195,14 @@
       background-image: url('background.png');
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: 58%;           /* Ukuran logo di tengah - bisa diubah */
+      background-size: 55%;           /* Ukuran logo di menu (bisa diubah) */
     }
 
     .menu-area::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(7, 20, 12, 0.80);   /* Atur kegelapan overlay */
+      background: rgba(7, 20, 12, 0.80);
       z-index: 1;
     }
 
@@ -362,7 +362,7 @@
       container.appendChild(div);
     });
 
-    // Hide loading setelah 3.5 detik
+    // Hide loading
     setTimeout(() => {
       const loading = document.getElementById("loading");
       loading.style.opacity = "0";
@@ -370,12 +370,6 @@
         loading.style.display = "none";
       }, 800);
     }, 3500);
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
-    }
   </script>
 
 </body>
